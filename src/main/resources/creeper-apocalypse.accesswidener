@@ -1,0 +1,11 @@
+accessWidener v2 named
+
+# Access widener for Creeper Apocalypse Escalation mod
+# Allows access to protected/private members for modding
+
+# Creeper explosion power access
+accessible field net/minecraft/entity/mob/CreeperEntity explosionRadius I
+mutable field net/minecraft/entity/mob/CreeperEntity explosionRadius I
+
+# Creeper charged state data tracker key
+accessible field net/minecraft/entity/mob/CreeperEntity CHARGED Lnet/minecraft/entity/data/TrackedData;

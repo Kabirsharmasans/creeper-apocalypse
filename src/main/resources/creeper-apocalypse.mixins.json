@@ -1,0 +1,27 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.creeperapocalypse.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "MobSpawnerMixin",
+    "NaturalSpawnerMixin",
+    "CreeperEntityMixin",
+    "CreeperEntityAccessor",
+    "ServerWorldMixin",
+    "PlayerEntityMixin",
+    "SpawnRestrictionAccessor",
+    "SpawnRestrictionMixin",
+    "SpawnGroupMixin",
+    "HostileEntityMixin"
+  ],
+  "client": [
+    "client.GameMenuScreenMixin",
+    "client.InGameHudMixin",
+    "client.MinecraftClientMixin",
+    "client.CreeperChargeFeatureRendererMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

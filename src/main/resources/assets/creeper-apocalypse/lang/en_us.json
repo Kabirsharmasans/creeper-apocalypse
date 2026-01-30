@@ -1,0 +1,54 @@
+{
+  "key.creeper-apocalypse.open_settings": "Open Creeper Challenge Settings",
+  "key.creeper-apocalypse.toggle_stats": "Toggle Stats Overlay",
+  "category.creeper-apocalypse.main": "Creeper Apocalypse",
+  
+  "entity.creeper-apocalypse.mini_creeper": "Mini Creeper",
+  "entity.creeper-apocalypse.giant_creeper": "Giant Creeper",
+  "entity.creeper-apocalypse.spider_creeper": "Spider Creeper",
+  "entity.creeper-apocalypse.ninja_creeper": "Ninja Creeper",
+  "entity.creeper-apocalypse.rainbow_creeper": "Rainbow Creeper",
+  "entity.creeper-apocalypse.bouncy_creeper": "Bouncy Creeper",
+  "entity.creeper-apocalypse.jockey_creeper": "Jockey Creeper",
+  "entity.creeper-apocalypse.happy_creeper": "Happy Creeper",
+  "entity.creeper-apocalypse.lightning_creeper": "Lightning Creeper",
+
+  "item.creeper-apocalypse.mini_creeper_spawn_egg": "Mini Creeper Spawn Egg",
+  "item.creeper-apocalypse.giant_creeper_spawn_egg": "Giant Creeper Spawn Egg",
+  "item.creeper-apocalypse.spider_creeper_spawn_egg": "Spider Creeper Spawn Egg",
+  "item.creeper-apocalypse.ninja_creeper_spawn_egg": "Ninja Creeper Spawn Egg",
+  "item.creeper-apocalypse.rainbow_creeper_spawn_egg": "Rainbow Creeper Spawn Egg",
+  "item.creeper-apocalypse.bouncy_creeper_spawn_egg": "Bouncy Creeper Spawn Egg",
+  "item.creeper-apocalypse.jockey_creeper_spawn_egg": "Jockey Creeper Spawn Egg",
+  "item.creeper-apocalypse.happy_creeper_spawn_egg": "Happy Creeper Spawn Egg",
+  "item.creeper-apocalypse.lightning_creeper_spawn_egg": "Lightning Creeper Spawn Egg",
+  
+  "death.attack.explosion.creeper": "%1$s was blown up by a Creeper",
+  "death.attack.explosion.creeper.player": "%1$s was blown up by a Creeper whilst fighting %2$s",
+  
+  "creeper-apocalypse.milestone.blood_moon": "BLOOD MOON - All creepers glow with crimson fury!",
+  "creeper-apocalypse.milestone.charged_day": "CHARGED DAY - 25%% of creepers spawn charged!",
+  "creeper-apocalypse.milestone.the_swarm": "THE SWARM - Day 10 - They come in WAVES!",
+  
+  "creeper-apocalypse.stats.title": "Creeper Challenge Stats",
+  "creeper-apocalypse.stats.day": "Day: %d",
+  "creeper-apocalypse.stats.multiplier": "Spawn Multiplier: %.1fx",
+  "creeper-apocalypse.stats.deaths": "Creeper Deaths: %d",
+  "creeper-apocalypse.stats.kills": "Creepers Killed: %d",
+  "creeper-apocalypse.stats.near_misses": "Near Misses: %d",
+  "creeper-apocalypse.stats.explosions_survived": "Explosions Survived: %d",
+  
+  "creeper-apocalypse.gui.title": "Creeper Challenge Settings",
+  "creeper-apocalypse.gui.enable": "Challenge: ENABLED",
+  "creeper-apocalypse.gui.disable": "Challenge: DISABLED",
+  "creeper-apocalypse.gui.max_multiplier": "Max Spawn Multiplier: %dx",
+  "creeper-apocalypse.gui.escalation_speed": "Escalation Speed: %s",
+  "creeper-apocalypse.gui.reset": "Reset Challenge to Day 1",
+  "creeper-apocalypse.gui.save": "Save & Close",
+  "creeper-apocalypse.gui.cancel": "Cancel",
+  
+  "creeper-apocalypse.message.welcome": "[CREEPER APOCALYPSE] Day %d - Spawn multiplier: %.1fx",
+  "creeper-apocalypse.message.day_advance": "[CREEPER APOCALYPSE] Day %d has begun! Spawn multiplier: %.1fx",
+  "creeper-apocalypse.message.near_miss": "NEAR MISS! (%.1f blocks)",
+  "creeper-apocalypse.message.death": "Creeper Death #%d on Day %d"
+}

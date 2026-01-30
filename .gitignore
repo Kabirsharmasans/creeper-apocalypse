@@ -1,0 +1,39 @@
+# Creeper Apocalypse Escalation - Build Files
+
+## Build outputs
+build/
+*.jar
+!gradle-wrapper.jar
+
+## Gradle
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+
+## IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.code-workspace
+
+## Eclipse
+.classpath
+.project
+.settings/
+
+## Runtime
+run/
+logs/
+
+## OS files
+.DS_Store
+Thumbs.db
+
+## Fabric
+remappedSrc/
+
+## Temp files
+sd.txt
+*.log
