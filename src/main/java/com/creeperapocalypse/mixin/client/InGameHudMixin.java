@@ -20,10 +20,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
  */
 @Mixin(InGameHud.class)
 public class InGameHudMixin {
-    
+
     @Shadow @Final
     private MinecraftClient client;
-    
+
     /**
      * Renders challenge information on the HUD
      */
@@ -31,7 +31,7 @@ public class InGameHudMixin {
     private void renderChallengeOverlay(DrawContext context, net.minecraft.client.render.RenderTickCounter tickCounter, CallbackInfo ci) {
         // Overlay removed as requested
     }
-    
+
     /**
      * Renders a small overlay with current day and multiplier
      * Improved visibility for all monitor sizes
@@ -40,3 +40,4 @@ public class InGameHudMixin {
         // Overlay removed
     }
 }
+

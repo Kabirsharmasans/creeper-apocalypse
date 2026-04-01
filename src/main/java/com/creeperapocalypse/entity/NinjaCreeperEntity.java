@@ -17,20 +17,20 @@ import net.minecraft.world.World;
  * Visual: Invisible with name hidden until revealed
  */
 public class NinjaCreeperEntity extends CreeperEntity {
-    
+
     private boolean revealed = false;
-    
+
     public NinjaCreeperEntity(EntityType<? extends CreeperEntity> entityType, World world) {
         super(entityType, world);
     }
-    
+
     public static DefaultAttributeContainer.Builder createNinjaCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
             .add(EntityAttributes.MAX_HEALTH, 15.0)
             .add(EntityAttributes.MOVEMENT_SPEED, 0.35)
             .add(EntityAttributes.FOLLOW_RANGE, 30.0);
     }
-    
+
     @Override
     public void tick() {
         super.tick();
@@ -46,11 +46,11 @@ public class NinjaCreeperEntity extends CreeperEntity {
             }
         }
     }
-    
+
     private PlayerEntity findNearestPlayer() {
         return (PlayerEntity) this.getEntityWorld().getClosestPlayer(this.getX(), this.getY(), this.getZ(), 6.0, false);
     }
-    
+
     private void reveal() {
         if (!revealed) {
             revealed = true;
@@ -85,7 +85,7 @@ public class NinjaCreeperEntity extends CreeperEntity {
                 10, 0.2, 0.2, 0.2, 0.01);
         }
     }
-    
+
     @Override
     public void setTarget(net.minecraft.entity.LivingEntity target) {
         super.setTarget(target);
@@ -93,8 +93,9 @@ public class NinjaCreeperEntity extends CreeperEntity {
             reveal();
         }
     }
-    
+
     public String getVariantName() {
         return "ninja";
     }
 }
+

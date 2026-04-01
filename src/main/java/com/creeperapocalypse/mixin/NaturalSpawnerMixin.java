@@ -12,3 +12,4 @@ import net.minecraft.world.SpawnHelper;
 public class NaturalSpawnerMixin {
     // Disabled - ServerWorldMixin handles all replacements
 }
+

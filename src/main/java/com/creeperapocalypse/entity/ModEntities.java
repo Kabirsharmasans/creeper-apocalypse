@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier;
  * Registers custom creeper variant entities
  */
 public class ModEntities {
-    
+
     // Registry keys
     public static final RegistryKey<EntityType<?>> MINI_CREEPER_KEY = RegistryKey.of(
         RegistryKeys.ENTITY_TYPE, Identifier.of(CreeperApocalypse.MOD_ID, "mini_creeper")
@@ -51,7 +51,7 @@ public class ModEntities {
             .dimensions(0.3f, 0.85f) // Half size
             .build(MINI_CREEPER_KEY)
     );
-    
+
     // Giant Creeper - larger, slower, massive explosion
     public static final EntityType<GiantCreeperEntity> GIANT_CREEPER = Registry.register(
         Registries.ENTITY_TYPE,
@@ -60,7 +60,7 @@ public class ModEntities {
             .dimensions(1.2f, 3.4f) // Double size
             .build(GIANT_CREEPER_KEY)
     );
-    
+
     // Spider Creeper - can climb walls
     public static final EntityType<SpiderCreeperEntity> SPIDER_CREEPER = Registry.register(
         Registries.ENTITY_TYPE,
@@ -69,7 +69,7 @@ public class ModEntities {
             .dimensions(0.6f, 1.7f)
             .build(SPIDER_CREEPER_KEY)
     );
-    
+
     // Ninja Creeper - invisible until close
     public static final EntityType<NinjaCreeperEntity> NINJA_CREEPER = Registry.register(
         Registries.ENTITY_TYPE,
@@ -78,7 +78,7 @@ public class ModEntities {
             .dimensions(0.6f, 1.7f)
             .build(NINJA_CREEPER_KEY)
     );
-    
+
     // Rainbow Creeper - colorful and glowing
     public static final EntityType<RainbowCreeperEntity> RAINBOW_CREEPER = Registry.register(
         Registries.ENTITY_TYPE,
@@ -87,7 +87,7 @@ public class ModEntities {
             .dimensions(0.6f, 1.7f)
             .build(RAINBOW_CREEPER_KEY)
     );
-    
+
     // Bouncy Creeper - hops around like slime
     public static final EntityType<BouncyCreeperEntity> BOUNCY_CREEPER = Registry.register(
         Registries.ENTITY_TYPE,
@@ -96,7 +96,7 @@ public class ModEntities {
             .dimensions(0.6f, 1.7f)
             .build(BOUNCY_CREEPER_KEY)
     );
-    
+
     // Jockey Creeper - mini creeper rides on top!
     public static final EntityType<JockeyCreeperEntity> JOCKEY_CREEPER = Registry.register(
         Registries.ENTITY_TYPE,
@@ -129,7 +129,7 @@ public class ModEntities {
      */
     public static void register() {
         CreeperApocalypse.LOGGER.info("Registering custom creeper variants...");
-        
+
         // Register entity attributes - THIS IS REQUIRED!
         FabricDefaultAttributeRegistry.register(MINI_CREEPER, MiniCreeperEntity.createMiniCreeperAttributes());
         FabricDefaultAttributeRegistry.register(GIANT_CREEPER, GiantCreeperEntity.createGiantCreeperAttributes());
@@ -140,19 +140,20 @@ public class ModEntities {
         FabricDefaultAttributeRegistry.register(JOCKEY_CREEPER, JockeyCreeperEntity.createJockeyCreeperAttributes());
         FabricDefaultAttributeRegistry.register(HAPPY_CREEPER, HappyCreeperEntity.createHappyCreeperAttributes());
         FabricDefaultAttributeRegistry.register(LIGHTNING_CREEPER, LightningCreeperEntity.createLightningCreeperAttributes());
-        
+
         CreeperApocalypse.LOGGER.info("Registered 9 creeper variants");
     }
-    
+
     public static boolean isVariant(EntityType<?> type) {
-        return type == MINI_CREEPER || 
-               type == GIANT_CREEPER || 
-               type == SPIDER_CREEPER || 
+        return type == MINI_CREEPER ||
+               type == GIANT_CREEPER ||
+               type == SPIDER_CREEPER ||
                type == NINJA_CREEPER ||
                type == HAPPY_CREEPER ||
                type == LIGHTNING_CREEPER ||
-               type == RAINBOW_CREEPER || 
-               type == BOUNCY_CREEPER || 
+               type == RAINBOW_CREEPER ||
+               type == BOUNCY_CREEPER ||
                type == JOCKEY_CREEPER;
     }
 }
+

@@ -42,3 +42,4 @@ public final class PerformanceTracker {
         return averageMspt <= 0.0 ? 50.0 : averageMspt;
     }
 }
+

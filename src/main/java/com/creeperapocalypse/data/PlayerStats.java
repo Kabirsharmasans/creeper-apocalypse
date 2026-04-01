@@ -2,8 +2,8 @@ package com.creeperapocalypse.data;
 
 import com.creeperapocalypse.CreeperApocalypse;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.nbt.NbtCompound;
-
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,39 +12,38 @@ import java.util.concurrent.ConcurrentHashMap;
  * Tracks per-player statistics for the Creeper Apocalypse challenge
  */
 public class PlayerStats {
-    
+
     // Static cache of player stats
     private static final Map<UUID, PlayerStats> PLAYER_STATS = new ConcurrentHashMap<>();
-    
+
     // Player identification
     UUID playerId;
     String playerName;
-    
+
     // Death and survival stats
     int creeperDeaths = 0;
     int creepersKilled = 0;
     int explosionsSurvived = 0;
     int nearMisses = 0; // Times within 3 blocks of explosion
     float closestNearMiss = Float.MAX_VALUE;
-    
+
     // Variant kills
     int miniCreepersKilled = 0;
     int giantCreepersKilled = 0;
     int spiderCreepersKilled = 0;
     int chargedCreepersKilled = 0;
-    
+
     // Survival streaks
     int longestSurvivalStreak = 0; // Days survived without dying
     int currentSurvivalStreak = 0;
-    
+
     // Time tracking
     long playTimeTicks = 0;
-    
+
     // Session stats (not persisted)
     private transient int sessionDeaths = 0;
     private transient int sessionKills = 0;
-    private transient long sessionStartTime = System.currentTimeMillis();
-    
+
     /**
      * Default constructor for deserialization
      */
@@ -52,7 +51,7 @@ public class PlayerStats {
         this.playerId = UUID.randomUUID();
         this.playerName = "Unknown";
     }
-    
+
     /**
      * Creates new stats for a player
      */
@@ -60,9 +59,9 @@ public class PlayerStats {
         this.playerId = player.getUuid();
         this.playerName = player.getName().getString();
     }
-    
+
     // ==================== RECORDING EVENTS ====================
-    
+
     /**
      * Records a death by creeper explosion
      */
@@ -72,14 +71,14 @@ public class PlayerStats {
         currentSurvivalStreak = 0;
         CreeperApocalypse.LOGGER.debug("Player " + playerName + " died to creeper (total: " + creeperDeaths + ")");
     }
-    
+
     /**
      * Records a creeper kill
      */
     public void recordCreeperKill(String variantType) {
         creepersKilled++;
         sessionKills++;
-        
+
         switch (variantType.toLowerCase()) {
             case "mini" -> miniCreepersKilled++;
             case "giant" -> giantCreepersKilled++;
@@ -87,14 +86,14 @@ public class PlayerStats {
             case "charged" -> chargedCreepersKilled++;
         }
     }
-    
+
     /**
      * Records surviving an explosion within damage range
      */
     public void recordExplosionSurvived() {
         explosionsSurvived++;
     }
-    
+
     /**
      * Records a near miss (within 3 blocks of explosion)
      */
@@ -104,7 +103,7 @@ public class PlayerStats {
             closestNearMiss = distance;
         }
     }
-    
+
     /**
      * Updates the survival streak (called on day change)
      */
@@ -114,16 +113,16 @@ public class PlayerStats {
             longestSurvivalStreak = currentSurvivalStreak;
         }
     }
-    
+
     /**
      * Updates play time
      */
     public void tick() {
         playTimeTicks++;
     }
-    
+
     // ==================== GETTERS ====================
-    
+
     public int getCreeperDeaths() { return creeperDeaths; }
     public int getCreepersKilled() { return creepersKilled; }
     public int getExplosionsSurvived() { return explosionsSurvived; }
@@ -138,7 +137,7 @@ public class PlayerStats {
     public long getPlayTimeTicks() { return playTimeTicks; }
     public int getSessionDeaths() { return sessionDeaths; }
     public int getSessionKills() { return sessionKills; }
-    
+
     /**
      * Gets play time formatted as hours:minutes:seconds
      */
@@ -148,7 +147,7 @@ public class PlayerStats {
         long hours = minutes / 60;
         return String.format("%02d:%02d:%02d", hours, minutes % 60, seconds % 60);
     }
-    
+
     /**
      * Calculates K/D ratio
      */
@@ -156,9 +155,9 @@ public class PlayerStats {
         if (creeperDeaths == 0) return creepersKilled;
         return (float) creepersKilled / creeperDeaths;
     }
-    
+
     // ==================== NBT SERIALIZATION ====================
-    
+
     /**
      * Serializes stats to NBT for saving
      */
@@ -180,7 +179,7 @@ public class PlayerStats {
         nbt.putLong("playTimeTicks", playTimeTicks);
         return nbt;
     }
-    
+
     /**
      * Deserializes stats from NBT
      */
@@ -203,41 +202,56 @@ public class PlayerStats {
         stats.playTimeTicks = nbt.getLong("playTimeTicks").orElse(0L);
         return stats;
     }
-    
+
     // ==================== STATIC METHODS ====================
-    
+
     /**
      * Gets or creates stats for a player
      */
     public static PlayerStats getOrCreate(PlayerEntity player) {
         return PLAYER_STATS.computeIfAbsent(player.getUuid(), uuid -> new PlayerStats(player));
     }
-    
+
     /**
      * Gets stats for a player by UUID
      */
     public static PlayerStats get(UUID playerId) {
         return PLAYER_STATS.get(playerId);
     }
-    
+
     /**
      * Saves stats for a player
      */
     public static void save(UUID playerId, PlayerStats stats) {
         PLAYER_STATS.put(playerId, stats);
     }
-    
+
     /**
      * Clears all player stats (for reset)
      */
     public static void clearAll() {
         PLAYER_STATS.clear();
     }
-    
+
     /**
      * Gets all tracked player stats
      */
     public static Map<UUID, PlayerStats> getAll() {
         return PLAYER_STATS;
     }
+
+    /**
+     * Loads all player stats from the current world save.
+     */
+    public static void loadAll(MinecraftServer server) {
+        PlayerStatsPersistence.loadAll(server, PLAYER_STATS);
+    }
+
+    /**
+     * Saves all player stats to the current world save.
+     */
+    public static void saveAll(MinecraftServer server) {
+        PlayerStatsPersistence.saveAll(server, PLAYER_STATS);
+    }
 }
+

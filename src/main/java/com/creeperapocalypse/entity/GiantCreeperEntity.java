@@ -13,14 +13,14 @@ import net.minecraft.world.World;
  * Visual: HUGE size + red "GIANT" name tag
  */
 public class GiantCreeperEntity extends CreeperEntity {
-    
+
     private static final int GIANT_EXPLOSION_RADIUS = 12;
     private boolean forcedIgnite = false;
-    
+
     public GiantCreeperEntity(EntityType<? extends CreeperEntity> entityType, World world) {
         super(entityType, world);
     }
-    
+
     public static DefaultAttributeContainer.Builder createGiantCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
             .add(EntityAttributes.MAX_HEALTH, 48.0)
@@ -54,12 +54,13 @@ public class GiantCreeperEntity extends CreeperEntity {
             }
         }
     }
-    
+
     public String getVariantName() {
         return "giant";
     }
-    
+
     public int getExplosionRadius() {
         return GIANT_EXPLOSION_RADIUS;
     }
 }
+

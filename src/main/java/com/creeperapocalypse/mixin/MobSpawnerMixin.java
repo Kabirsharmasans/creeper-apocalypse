@@ -11,3 +11,4 @@ import org.spongepowered.asm.mixin.Mixin;
 public class MobSpawnerMixin {
     // The main mob replacement logic is in NaturalSpawnerMixin and MobSpawnMixin
 }
+

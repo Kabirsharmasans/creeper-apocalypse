@@ -22,20 +22,20 @@ import net.minecraft.server.world.ServerWorld;
  * Visual: Has a visible rider and special name
  */
 public class JockeyCreeperEntity extends CreeperEntity {
-    
+
     private boolean hasSpawnedRider = false;
-    
+
     public JockeyCreeperEntity(EntityType<? extends CreeperEntity> entityType, World world) {
         super(entityType, world);
     }
-    
+
     public static DefaultAttributeContainer.Builder createJockeyCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
             .add(EntityAttributes.MAX_HEALTH, 25.0)
             .add(EntityAttributes.MOVEMENT_SPEED, 0.22)
             .add(EntityAttributes.FOLLOW_RANGE, 40.0);
     }
-    
+
     @Override
     public boolean damage(ServerWorld world, DamageSource source, float amount) {
         // Immune to Creeper explosions, but vulnerable to TNT/Players
@@ -54,7 +54,7 @@ public class JockeyCreeperEntity extends CreeperEntity {
             hasSpawnedRider = true;
         }
     }
-    
+
     private void spawnRider() {
         World world = this.getEntityWorld();
         if (world instanceof ServerWorld serverWorld) {
@@ -66,7 +66,7 @@ public class JockeyCreeperEntity extends CreeperEntity {
             }
         }
     }
-    
+
     @Override
     public void onDeath(net.minecraft.entity.damage.DamageSource damageSource) {
         removeAllPassengers();
@@ -81,8 +81,9 @@ public class JockeyCreeperEntity extends CreeperEntity {
             }
         }
     }
-    
+
     public String getVariantName() {
         return "jockey";
     }
 }
+

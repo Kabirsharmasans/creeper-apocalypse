@@ -64,7 +64,7 @@ public class ModItems {
 
             return ActionResult.CONSUME;
         }
-        
+
         public int getPrimaryColor() { return primaryColor; }
         public int getSecondaryColor() { return secondaryColor; }
     }
@@ -109,3 +109,4 @@ public class ModItems {
         }
     }
 }
+

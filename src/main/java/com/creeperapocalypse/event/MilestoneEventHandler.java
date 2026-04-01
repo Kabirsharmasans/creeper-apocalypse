@@ -9,25 +9,25 @@ import net.minecraft.entity.effect.StatusEffects;
  * Handles milestone-specific events and effects
  */
 public class MilestoneEventHandler {
-    
+
     private boolean bloodMoonActive = false;
     private boolean chargedDayActive = false;
     private boolean swarmActive = false;
     private int currentDay = 1;
-    
+
     public enum MilestoneType {
         BLOOD_MOON,
         CHARGED_DAY,
         THE_SWARM
     }
-    
+
     public void updateFromChallengeData() {
         currentDay = CreeperApocalypse.CHALLENGE_DATA.getCurrentDay();
         bloodMoonActive = CreeperApocalypse.CHALLENGE_DATA.isBloodMoonTriggered() && currentDay >= 5;
         chargedDayActive = CreeperApocalypse.CHALLENGE_DATA.isChargedDayTriggered() && currentDay >= 7;
         swarmActive = CreeperApocalypse.CHALLENGE_DATA.isSwarmDayTriggered() && currentDay >= 10;
     }
-    
+
     public boolean isActive(MilestoneType type) {
         updateFromChallengeData();
         return switch (type) {
@@ -36,21 +36,21 @@ public class MilestoneEventHandler {
             case THE_SWARM -> swarmActive && CreeperApocalypse.CONFIG.swarmDayEnabled();
         };
     }
-    
+
     public float getMilestoneSpawnBonus() {
         float bonus = 0.0f;
         if (isActive(MilestoneType.BLOOD_MOON)) bonus += 0.5f;
         if (isActive(MilestoneType.THE_SWARM)) bonus += 1.0f;
         return bonus;
     }
-    
+
     public float getChargedChance() {
         if (!isActive(MilestoneType.CHARGED_DAY)) return 0.0f;
         float baseChance = 0.25f;
         int daysAfterSeven = Math.max(0, currentDay - 7);
         return Math.min(0.75f, baseChance + (daysAfterSeven * 0.05f));
     }
-    
+
     public float getVariantSpawnRate() {
         float rate = 0.0f;
         if (currentDay >= 3) rate += 0.1f;
@@ -59,12 +59,12 @@ public class MilestoneEventHandler {
         if (isActive(MilestoneType.THE_SWARM)) rate *= 1.5f;
         return rate;
     }
-    
+
     public void applySpawnEffects(CreeperEntity creeper) {
         if (!CreeperApocalypse.CONFIG.isEnabled()) return;
-        
+
         updateFromChallengeData();
-        
+
         if (isActive(MilestoneType.BLOOD_MOON)) {
             creeper.addStatusEffect(new StatusEffectInstance(
                 StatusEffects.GLOWING,
@@ -72,7 +72,7 @@ public class MilestoneEventHandler {
                 0, false, false, true
             ));
         }
-        
+
         if (isActive(MilestoneType.CHARGED_DAY)) {
             float chargeChance = getChargedChance();
             if (creeper.getRandom().nextFloat() < chargeChance) {
@@ -80,7 +80,7 @@ public class MilestoneEventHandler {
                 CreeperApocalypse.LOGGER.debug("Spawned CHARGED creeper (Day " + currentDay + ")");
             }
         }
-        
+
         if (isActive(MilestoneType.THE_SWARM)) {
             creeper.addStatusEffect(new StatusEffectInstance(
                 StatusEffects.SPEED,
@@ -89,7 +89,7 @@ public class MilestoneEventHandler {
             ));
         }
     }
-    
+
     public void onCreeperExplode(CreeperEntity creeper) {
         if (isActive(MilestoneType.BLOOD_MOON)) {
             if (creeper.getRandom().nextFloat() < 0.2f) {
@@ -97,19 +97,19 @@ public class MilestoneEventHandler {
             }
         }
     }
-    
+
     public void reset() {
         bloodMoonActive = false;
         chargedDayActive = false;
         swarmActive = false;
         currentDay = 1;
     }
-    
+
     public boolean isBloodMoonActive() { return bloodMoonActive; }
     public boolean isChargedDayActive() { return chargedDayActive; }
     public boolean isSwarmActive() { return swarmActive; }
     public int getCurrentDay() { return currentDay; }
-    
+
     public String getMilestoneStatus() {
         updateFromChallengeData();
         StringBuilder sb = new StringBuilder();
@@ -119,3 +119,4 @@ public class MilestoneEventHandler {
         return sb.toString().trim();
     }
 }
+

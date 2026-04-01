@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
-    
+
     /**
      * Thread-local flag to prevent infinite recursion when creating replacement entities
      */
@@ -29,7 +29,7 @@ public class ServerWorldMixin {
 
     @Unique
     private int creeperSweepTicker = 0;
-    
+
     /**
      * Intercepts entity spawning to potentially replace with creepers
      */
@@ -47,39 +47,39 @@ public class ServerWorldMixin {
         if (entity == null) {
             return;
         }
-        
+
         // Prevent infinite recursion - if we're already replacing, don't replace again
         if (isReplacingEntity.get()) {
             return;
         }
-        
+
         // Don't replace our already-spawned variants!
         if (ModEntities.isVariant(entity.getType())) {
             return;
         }
-        
+
         // Check if this entity type should be replaced
         if (MobReplacementHelper.shouldReplace(entity)) {
             try {
                 isReplacingEntity.set(true);
                 ServerWorld world = (ServerWorld) (Object) this;
-                
+
                 // Try to create a creeper
                 Entity replacement = MobReplacementHelper.createReplacementCreeper(world, entity);
-                
+
                 if (replacement != null) {
                     // Success! Spawn the creeper
                     world.spawnEntity(replacement);
                     CreeperApocalypse.CHALLENGE_DATA.incrementCreepersSpawned();
                     CreeperApocalypse.LOGGER.debug("Replaced " + entity.getType().getTranslationKey() + " with creeper");
                 }
-                
+
                 // ALWAYS CANCEL THE ORIGINAL SPAWN
                 // 1. If replacement spawned, we don't want the original.
                 // 2. If replacement was null (fish/limit reached), we DON'T want the original either.
                 cir.setReturnValue(true);
                 cir.cancel();
-                
+
             } finally {
                 isReplacingEntity.set(false);
             }
@@ -147,3 +147,4 @@ public class ServerWorldMixin {
         }
     }
 }
+

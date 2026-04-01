@@ -16,10 +16,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
  */
 @Mixin(CreeperChargeFeatureRenderer.class)
 public class CreeperChargeFeatureRendererMixin {
-    
+
     @Unique
     private static final Identifier PURPLE_ARMOR = Identifier.of(CreeperApocalypse.MOD_ID, "textures/entity/creeper_armor_purple.png");
-    
+
     /**
      * Intercept getEnergySwirlTexture to return purple texture for super charged Lightning Creepers.
      * The ThreadLocal RENDERING_SUPER_CHARGED is set by LightningCreeperRenderer.scale() before rendering.
@@ -31,3 +31,4 @@ public class CreeperChargeFeatureRendererMixin {
         }
     }
 }
+

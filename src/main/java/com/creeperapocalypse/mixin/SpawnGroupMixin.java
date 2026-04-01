@@ -14,7 +14,7 @@ public class SpawnGroupMixin {
         // Boost capacity for MONSTER and CREATURE groups to allow the apocalypse
         // "this" is the enum instance
         SpawnGroup group = (SpawnGroup) (Object) this;
-        
+
         if (group == SpawnGroup.MONSTER) {
             cir.setReturnValue(500); // Increased cap (default ~70)
         } else if (group == SpawnGroup.CREATURE) {
@@ -22,3 +22,4 @@ public class SpawnGroupMixin {
         }
     }
 }
+

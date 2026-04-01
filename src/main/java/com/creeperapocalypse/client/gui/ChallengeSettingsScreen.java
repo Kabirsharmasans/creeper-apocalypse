@@ -1,7 +1,6 @@
 package com.creeperapocalypse.client.gui;
 
 import com.creeperapocalypse.CreeperApocalypse;
-import com.creeperapocalypse.client.CreeperApocalypseClient;
 import com.creeperapocalypse.network.ModNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -13,9 +12,9 @@ import net.minecraft.text.Text;
  * Settings screen for configuring the Creeper Apocalypse challenge
  */
 public class ChallengeSettingsScreen extends Screen {
-    
+
     private final Screen parent;
-    
+
     private boolean enabled;
     private float maxMultiplier;
     private float escalationSpeed;
@@ -32,26 +31,26 @@ public class ChallengeSettingsScreen extends Screen {
     private float jockeyCreeperChance;
     private float happyCreeperChance;
     private float lightningCreeperChance;
-    
+
     // NEW OPTION
     private boolean ignoreDayProgression;
-    
+
     // LIMITS
     private int maxCreepersOverworld;
     private int maxCreepersNether;
     private int maxCreepersEnd;
-    
+
     // UI Elements for limiting types
     private TextFieldWidget overworldLimitField;
     private TextFieldWidget netherLimitField;
     private TextFieldWidget endLimitField;
-    
+
     private int guiScale;
-    
+
     public ChallengeSettingsScreen(Screen parent) {
         super(Text.literal("Creeper Apocalypse Settings"));
         this.parent = parent;
-        
+
         // Load current settings
         enabled = CreeperApocalypse.CONFIG.isEnabled();
         maxMultiplier = CreeperApocalypse.CONFIG.getMaxSpawnMultiplier();
@@ -70,14 +69,14 @@ public class ChallengeSettingsScreen extends Screen {
         happyCreeperChance = CreeperApocalypse.CONFIG.getHappyCreeperChance();
         lightningCreeperChance = CreeperApocalypse.CONFIG.getLightningCreeperChance();
         ignoreDayProgression = CreeperApocalypse.CONFIG.ignoreDayProgression();
-        
+
         maxCreepersOverworld = CreeperApocalypse.CONFIG.getMaxCreepersOverworld();
         maxCreepersNether = CreeperApocalypse.CONFIG.getMaxCreepersNether();
         maxCreepersEnd = CreeperApocalypse.CONFIG.getMaxCreepersEnd();
-        
+
         guiScale = net.minecraft.client.MinecraftClient.getInstance().options.getGuiScale().getValue();
     }
-    
+
     @Override
     protected void init() {
         int centerX = width / 2;
@@ -87,10 +86,10 @@ public class ChallengeSettingsScreen extends Screen {
         int spacing = 22;
         int leftX = centerX - btnW - 5;
         int rightX = centerX + 5;
-        
+
         // LEFT COLUMN: General Settings
         int rowL = 0;
-        
+
         // Enable/Disable button
         addDrawableChild(ButtonWidget.builder(
             Text.literal("Challenge: " + (enabled ? "§aENABLED" : "§cDISABLED")),
@@ -101,7 +100,7 @@ public class ChallengeSettingsScreen extends Screen {
             .dimensions(leftX, startY + spacing * rowL++, btnW, btnH)
             .build()
         );
-        
+
         // Max multiplier button
         addDrawableChild(ButtonWidget.builder(
             Text.literal("Max Multiplier: §e" + String.format("%.1fx", maxMultiplier)),
@@ -112,7 +111,7 @@ public class ChallengeSettingsScreen extends Screen {
             .dimensions(leftX, startY + spacing * rowL++, btnW, btnH)
             .build()
         );
-        
+
         // Escalation speed button
         addDrawableChild(ButtonWidget.builder(
             Text.literal("Escalation: " + getSpeedText()),
@@ -124,9 +123,6 @@ public class ChallengeSettingsScreen extends Screen {
             .build()
         );
 
-    
-
-
         // GUI scale
         addDrawableChild(ButtonWidget.builder(
             Text.literal("GUI Scale: §e" + guiScaleText()),
@@ -137,7 +133,7 @@ public class ChallengeSettingsScreen extends Screen {
             .dimensions(leftX, startY + spacing * rowL++, btnW, btnH)
             .build()
         );
-        
+
         // Milestones button
         addDrawableChild(ButtonWidget.builder(
             Text.literal("Milestones: " + (milestonesEnabled ? "§aON" : "§7OFF")),
@@ -148,7 +144,7 @@ public class ChallengeSettingsScreen extends Screen {
             .dimensions(leftX, startY + spacing * rowL++, btnW, btnH)
             .build()
         );
-        
+
         // Auto-screenshot button
         addDrawableChild(ButtonWidget.builder(
             Text.literal("Death Scrshot: " + (autoScreenshot ? "§aON" : "§7OFF")),
@@ -159,7 +155,7 @@ public class ChallengeSettingsScreen extends Screen {
             .dimensions(leftX, startY + spacing * rowL++, btnW, btnH)
             .build()
         );
-        
+
         // Keep inventory button
         addDrawableChild(ButtonWidget.builder(
             Text.literal("Keep Inv: " + (keepInventory ? "§aON" : "§7OFF")),
@@ -170,7 +166,7 @@ public class ChallengeSettingsScreen extends Screen {
             .dimensions(leftX, startY + spacing * rowL++, btnW, btnH)
             .build()
         );
-        
+
         // NO DAY MODE button
         addDrawableChild(ButtonWidget.builder(
             Text.literal("No Day Mode: " + (ignoreDayProgression ? "§aON" : "§7OFF")),
@@ -181,10 +177,10 @@ public class ChallengeSettingsScreen extends Screen {
             .dimensions(leftX, startY + spacing * rowL++, btnW, btnH)
             .build()
         );
-        
+
         // RESET CHALLENGE button
         addDrawableChild(ButtonWidget.builder(
-            Text.literal("§c⚠ RESET CHALLENGE ⚠"),
+            Text.literal("§c[WARNING] RESET CHALLENGE [WARNING]"),
             button -> {
                 ModNetworking.sendResetRequest();
                 if (client != null && client.player != null) {
@@ -246,30 +242,30 @@ public class ChallengeSettingsScreen extends Screen {
         addDrawableChild(ButtonWidget.builder(Text.literal("Lightning: §e" + formatPercent(lightningCreeperChance)), b -> {
             lightningCreeperChance = cycleChance(lightningCreeperChance); b.setMessage(Text.literal("Lightning: §e" + formatPercent(lightningCreeperChance)));
         }).dimensions(rightX, startY + spacing * rowR++, btnW, btnH).build());
-        
+
         // --- SPAWN LIMIT INPUTS (Right Column, after variants) ---
         // Overworld Limit
         addDrawableChild(ButtonWidget.builder(Text.literal("Overworld Limit:"), b -> {})
             .dimensions(rightX, startY + spacing * rowR, btnW / 2 - 2, btnH).build()).active = false;
-        
+
         overworldLimitField = new TextFieldWidget(textRenderer, rightX + btnW / 2 + 2, startY + spacing * rowR++, btnW / 2 - 2, btnH, Text.literal("Overworld Limit"));
         overworldLimitField.setText(String.valueOf(maxCreepersOverworld));
         overworldLimitField.setChangedListener(this::onLimitChanged);
         addDrawableChild(overworldLimitField);
-        
+
         // Nether Limit
         addDrawableChild(ButtonWidget.builder(Text.literal("Nether Limit:"), b -> {})
             .dimensions(rightX, startY + spacing * rowR, btnW / 2 - 2, btnH).build()).active = false;
-            
+
         netherLimitField = new TextFieldWidget(textRenderer, rightX + btnW / 2 + 2, startY + spacing * rowR++, btnW / 2 - 2, btnH, Text.literal("Nether Limit"));
         netherLimitField.setText(String.valueOf(maxCreepersNether));
         netherLimitField.setChangedListener(this::onLimitChanged);
         addDrawableChild(netherLimitField);
-        
+
         // End Limit
         addDrawableChild(ButtonWidget.builder(Text.literal("End Limit:"), b -> {})
             .dimensions(rightX, startY + spacing * rowR, btnW / 2 - 2, btnH).build()).active = false;
-            
+
         endLimitField = new TextFieldWidget(textRenderer, rightX + btnW / 2 + 2, startY + spacing * rowR++, btnW / 2 - 2, btnH, Text.literal("End Limit"));
         endLimitField.setText(String.valueOf(maxCreepersEnd));
         endLimitField.setChangedListener(this::onLimitChanged);
@@ -282,7 +278,7 @@ public class ChallengeSettingsScreen extends Screen {
             .dimensions(centerX - 100, height - 50, 200, 20)
             .build()
         );
-        
+
         // Cancel button (Centered bottom)
         addDrawableChild(ButtonWidget.builder(
             Text.literal("§cCancel"),
@@ -291,27 +287,27 @@ public class ChallengeSettingsScreen extends Screen {
             .build()
         );
     }
-    
+
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         // Don't call renderBackground - super.render handles it
         // This fixes "Can only blur once per frame" error
-        
+
         super.render(context, mouseX, mouseY, delta);
-        
-        context.drawCenteredTextWithShadow(textRenderer, 
-            Text.literal("§c☠ §4§lCREEPER APOCALYPSE SETTINGS §c☠"), 
+
+        context.drawCenteredTextWithShadow(textRenderer,
+            Text.literal("§c[!] §4§lCREEPER APOCALYPSE SETTINGS §c[!]"),
             width / 2, 15, 0xFFFFFF);
-        
+
         // Stats display at bottom
         int statsY = height - 75;
         int currentDay = CreeperApocalypse.CHALLENGE_DATA.getCurrentDay();
         float currentMultiplier = CreeperApocalypse.CHALLENGE_DATA.getSpawnMultiplier();
         long creepersKilled = CreeperApocalypse.CHALLENGE_DATA.getTotalCreepersKilled();
         long creeperDeaths = CreeperApocalypse.CHALLENGE_DATA.getTotalCreeperDeaths();
-        
+
         context.drawCenteredTextWithShadow(textRenderer,
-            Text.literal("§7Day: §e" + currentDay + " §7| Multiplier: §6" + 
+            Text.literal("§7Day: §e" + currentDay + " §7| Multiplier: §6" +
                 String.format("%.1fx", currentMultiplier) + " §7| Killed: §a" + creepersKilled + " §7| Deaths: §c" + creeperDeaths),
             width / 2, statsY, 0xFFFFFF);
 
@@ -319,13 +315,13 @@ public class ChallengeSettingsScreen extends Screen {
             Text.literal("§8Hotkeys: §fK Settings §7| §fJ Stats"),
             width / 2, statsY + 14, 0xCCCCCC);
     }
-    
+
     private String getSpeedText() {
         if (escalationSpeed <= 0.5f) return "§7Slow (0.5x)";
         if (escalationSpeed <= 1.0f) return "§eNormal (1x)";
         return "§cFast (2x)";
     }
-    
+
     private void cycleEscalationSpeed() {
         if (escalationSpeed <= 0.5f) {
             escalationSpeed = 1.0f;
@@ -335,59 +331,104 @@ public class ChallengeSettingsScreen extends Screen {
             escalationSpeed = 0.5f;
         }
     }
-    
+
     private void onLimitChanged(String text) {
         // Just allows typing, validation happens on save
     }
 
     private void saveAndClose() {
-        // Parse and validate limits
-        try {
-            int ow = Integer.parseInt(overworldLimitField.getText());
-            maxCreepersOverworld = Math.max(1, Math.min(1000, ow));
-        } catch (NumberFormatException e) {
-            // Keep existing valid value
-        }
-        
-        try {
-            int ne = Integer.parseInt(netherLimitField.getText());
-            maxCreepersNether = Math.max(1, Math.min(1000, ne));
-        } catch (NumberFormatException e) { }
-        
-        try {
-            int end = Integer.parseInt(endLimitField.getText());
-            maxCreepersEnd = Math.max(1, Math.min(1000, end));
-        } catch (NumberFormatException e) { }
+        maxCreepersOverworld = parseLimitOrDefault(overworldLimitField, maxCreepersOverworld);
+        maxCreepersNether = parseLimitOrDefault(netherLimitField, maxCreepersNether);
+        maxCreepersEnd = parseLimitOrDefault(endLimitField, maxCreepersEnd);
 
-        CreeperApocalypse.CONFIG.setEnabled(enabled);
-        CreeperApocalypse.CONFIG.setMaxSpawnMultiplier(maxMultiplier);
-        CreeperApocalypse.CONFIG.setEscalationSpeed(escalationSpeed);
-        CreeperApocalypse.CONFIG.setSpecialVariantsEnabled(specialVariants);
-        CreeperApocalypse.CONFIG.setMiniCreeperChance(miniCreeperChance);
-        CreeperApocalypse.CONFIG.setGiantCreeperChance(giantCreeperChance);
-        CreeperApocalypse.CONFIG.setSpiderCreeperChance(spiderCreeperChance);
-        CreeperApocalypse.CONFIG.setNinjaCreeperChance(ninjaCreeperChance);
-        CreeperApocalypse.CONFIG.setRainbowCreeperChance(rainbowCreeperChance);
-        CreeperApocalypse.CONFIG.setBouncyCreeperChance(bouncyCreeperChance);
-        CreeperApocalypse.CONFIG.setJockeyCreeperChance(jockeyCreeperChance);
-        CreeperApocalypse.CONFIG.setHappyCreeperChance(happyCreeperChance);
-        CreeperApocalypse.CONFIG.setLightningCreeperChance(lightningCreeperChance);
-        CreeperApocalypse.CONFIG.setAutoScreenshotOnDeath(autoScreenshot);
-        CreeperApocalypse.CONFIG.setKeepInventoryOnDeath(keepInventory);
-        CreeperApocalypse.CONFIG.setMilestonesEnabled(milestonesEnabled);
-        CreeperApocalypse.CONFIG.setIgnoreDayProgression(ignoreDayProgression);
-        
-        CreeperApocalypse.CONFIG.setMaxCreepersOverworld(maxCreepersOverworld);
-        CreeperApocalypse.CONFIG.setMaxCreepersNether(maxCreepersNether);
-        CreeperApocalypse.CONFIG.setMaxCreepersEnd(maxCreepersEnd);
-        
-        CreeperApocalypse.CONFIG.save();
-        
-        ModNetworking.sendConfigUpdate(enabled, maxMultiplier, escalationSpeed);
-        
+        final boolean enabledValue = enabled;
+        final float maxMultiplierValue = maxMultiplier;
+        final float escalationSpeedValue = escalationSpeed;
+        final boolean specialVariantsValue = specialVariants;
+        final float miniCreeperChanceValue = miniCreeperChance;
+        final float giantCreeperChanceValue = giantCreeperChance;
+        final float spiderCreeperChanceValue = spiderCreeperChance;
+        final float ninjaCreeperChanceValue = ninjaCreeperChance;
+        final float rainbowCreeperChanceValue = rainbowCreeperChance;
+        final float bouncyCreeperChanceValue = bouncyCreeperChance;
+        final float jockeyCreeperChanceValue = jockeyCreeperChance;
+        final float happyCreeperChanceValue = happyCreeperChance;
+        final float lightningCreeperChanceValue = lightningCreeperChance;
+        final boolean autoScreenshotValue = autoScreenshot;
+        final boolean keepInventoryValue = keepInventory;
+        final boolean milestonesEnabledValue = milestonesEnabled;
+        final boolean ignoreDayProgressionValue = ignoreDayProgression;
+        final int maxCreepersOverworldValue = maxCreepersOverworld;
+        final int maxCreepersNetherValue = maxCreepersNether;
+        final int maxCreepersEndValue = maxCreepersEnd;
+
+        boolean savedToWorld = CreeperApocalypse.applyConfigForCurrentWorld(config -> {
+            config.setEnabled(enabledValue);
+            config.setMaxSpawnMultiplier(maxMultiplierValue);
+            config.setEscalationSpeed(escalationSpeedValue);
+            config.setSpecialVariantsEnabled(specialVariantsValue);
+            config.setMiniCreeperChance(miniCreeperChanceValue);
+            config.setGiantCreeperChance(giantCreeperChanceValue);
+            config.setSpiderCreeperChance(spiderCreeperChanceValue);
+            config.setNinjaCreeperChance(ninjaCreeperChanceValue);
+            config.setRainbowCreeperChance(rainbowCreeperChanceValue);
+            config.setBouncyCreeperChance(bouncyCreeperChanceValue);
+            config.setJockeyCreeperChance(jockeyCreeperChanceValue);
+            config.setHappyCreeperChance(happyCreeperChanceValue);
+            config.setLightningCreeperChance(lightningCreeperChanceValue);
+            config.setAutoScreenshotOnDeath(autoScreenshotValue);
+            config.setKeepInventoryOnDeath(keepInventoryValue);
+            config.setMilestonesEnabled(milestonesEnabledValue);
+            config.setIgnoreDayProgression(ignoreDayProgressionValue);
+            config.setMaxCreepersOverworld(maxCreepersOverworldValue);
+            config.setMaxCreepersNether(maxCreepersNetherValue);
+            config.setMaxCreepersEnd(maxCreepersEndValue);
+        });
+        if (!savedToWorld) {
+            // Fallback for edge cases where the world is not available.
+            CreeperApocalypse.CONFIG.setEnabled(enabledValue);
+            CreeperApocalypse.CONFIG.setMaxSpawnMultiplier(maxMultiplierValue);
+            CreeperApocalypse.CONFIG.setEscalationSpeed(escalationSpeedValue);
+            CreeperApocalypse.CONFIG.setSpecialVariantsEnabled(specialVariantsValue);
+            CreeperApocalypse.CONFIG.setMiniCreeperChance(miniCreeperChanceValue);
+            CreeperApocalypse.CONFIG.setGiantCreeperChance(giantCreeperChanceValue);
+            CreeperApocalypse.CONFIG.setSpiderCreeperChance(spiderCreeperChanceValue);
+            CreeperApocalypse.CONFIG.setNinjaCreeperChance(ninjaCreeperChanceValue);
+            CreeperApocalypse.CONFIG.setRainbowCreeperChance(rainbowCreeperChanceValue);
+            CreeperApocalypse.CONFIG.setBouncyCreeperChance(bouncyCreeperChanceValue);
+            CreeperApocalypse.CONFIG.setJockeyCreeperChance(jockeyCreeperChanceValue);
+            CreeperApocalypse.CONFIG.setHappyCreeperChance(happyCreeperChanceValue);
+            CreeperApocalypse.CONFIG.setLightningCreeperChance(lightningCreeperChanceValue);
+            CreeperApocalypse.CONFIG.setAutoScreenshotOnDeath(autoScreenshotValue);
+            CreeperApocalypse.CONFIG.setKeepInventoryOnDeath(keepInventoryValue);
+            CreeperApocalypse.CONFIG.setMilestonesEnabled(milestonesEnabledValue);
+            CreeperApocalypse.CONFIG.setIgnoreDayProgression(ignoreDayProgressionValue);
+            CreeperApocalypse.CONFIG.setMaxCreepersOverworld(maxCreepersOverworldValue);
+            CreeperApocalypse.CONFIG.setMaxCreepersNether(maxCreepersNetherValue);
+            CreeperApocalypse.CONFIG.setMaxCreepersEnd(maxCreepersEndValue);
+            CreeperApocalypse.CONFIG.save();
+        }
+
+        if (client != null && client.player != null) {
+            if (savedToWorld) {
+                client.player.sendMessage(Text.literal("§a[CREEPER APOCALYPSE] Local world settings saved."), false);
+            } else {
+                client.player.sendMessage(Text.literal("§e[CREEPER APOCALYPSE] Settings saved to global fallback config."), false);
+            }
+        }
+
         close();
     }
-    
+
+    private int parseLimitOrDefault(TextFieldWidget field, int defaultValue) {
+        try {
+            int parsed = Integer.parseInt(field.getText());
+            return Math.max(1, Math.min(1000, parsed));
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
     @Override
     public void close() {
         if (client != null) {
@@ -422,3 +463,4 @@ public class ChallengeSettingsScreen extends Screen {
         return guiScale == 0 ? "Auto" : String.valueOf(guiScale);
     }
 }
+

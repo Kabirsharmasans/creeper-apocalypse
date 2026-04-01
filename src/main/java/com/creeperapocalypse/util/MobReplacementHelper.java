@@ -1,8 +1,8 @@
 package com.creeperapocalypse.util;
 
 import com.creeperapocalypse.CreeperApocalypse;
+import com.creeperapocalypse.entity.LightningCreeperEntity;
 import com.creeperapocalypse.entity.ModEntities;
-import com.creeperapocalypse.util.PerformanceTracker;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -17,31 +17,31 @@ import java.util.Set;
 
 /**
  * CREEPER APOCALYPSE - Mob Replacement Helper
- * 
+ *
  * SIMPLE RULES:
  * 1. ALL living mobs become CREEPERS
  * 2. EXCEPT: Blaze, Villager, Wandering Trader, Ender Dragon, Wither
  * 3. EXCEPT: All fish/aquatic (they cause infinite spawn lag)
  * 4. MAX 400 creepers to prevent lag
- * 
+ *
  * MOBS THAT BECOME CREEPERS (from user's list):
- * 
- * PASSIVE → CREEPER:
+ *
+ * PASSIVE -> CREEPER:
  * Allay, Armadillo, Bat, Camel, Cat, Chicken, Cow, Donkey, Fox, Horse,
  * Mooshroom, Mule, Ocelot, Parrot, Pig, Rabbit, Sheep, Skeleton Horse,
  * Sniffer, Snow Golem, Strider
- * 
- * NEUTRAL → CREEPER:
+ *
+ * NEUTRAL -> CREEPER:
  * Bee, Cave Spider, Enderman, Goat, Iron Golem, Llama, Panda, Piglin,
  * Polar Bear, Spider, Trader Llama, Wolf, Zombified Piglin
- * 
- * HOSTILE → CREEPER:
+ *
+ * HOSTILE -> CREEPER:
  * Bogged, Breeze, Creaking, Drowned, Elder Guardian, Endermite, Evoker,
  * Ghast, Guardian, Hoglin, Husk, Magma Cube, Phantom, Piglin Brute,
  * Pillager, Ravager, Shulker, Silverfish, Skeleton, Slime, Stray, Vex,
  * Vindicator, Warden, Witch, Wither Skeleton, Zoglin, Zombie, Zombie Horse,
  * Zombie Villager, Giant, Illusioner
- * 
+ *
  * STAYS NORMAL (NEVER becomes creeper):
  * - Blaze (need for blaze rods)
  * - Villager (need for trading)
@@ -52,11 +52,11 @@ import java.util.Set;
  * - Aquatic: Squid, Glow Squid, Dolphin, Axolotl, Tadpole, Frog, Turtle
  */
 public class MobReplacementHelper {
-    
+
     private static final Set<EntityType<?>> NEVER_REPLACE = new HashSet<>();
     private static final Set<EntityType<?>> FISH_TYPES = new HashSet<>();
     private static final Random RANDOM = new Random();
-    
+
     // Cached counts per dimension
     private static int cachedOverworldCreeperCount = 0;
     private static int cachedNetherCreeperCount = 0;
@@ -65,39 +65,39 @@ public class MobReplacementHelper {
     private static long lastNetherCountTime = 0;
     private static long lastEndCountTime = 0;
     private static final long COUNT_CACHE_MS = 1000;
-    
+
     static {
         // =============================================
         // ONLY THESE STAY NORMAL - EVERYTHING ELSE
         // BECOMES A CREEPER!!!
         // =============================================
-        
+
         // === ESSENTIAL FOR GAME PROGRESSION ===
         NEVER_REPLACE.add(EntityType.BLAZE);           // Need blaze rods!
         NEVER_REPLACE.add(EntityType.VILLAGER);        // Need trading!
         NEVER_REPLACE.add(EntityType.WANDERING_TRADER);// Need trading!
-        
+
         // === BOSSES ===
         NEVER_REPLACE.add(EntityType.ENDER_DRAGON);
         NEVER_REPLACE.add(EntityType.WITHER);
-        
+
         // === FISH - DON'T SPAWN AT ALL ===
         FISH_TYPES.add(EntityType.COD);
         FISH_TYPES.add(EntityType.SALMON);
         FISH_TYPES.add(EntityType.TROPICAL_FISH);
         FISH_TYPES.add(EntityType.PUFFERFISH);
-        
+
         // === THESE BECOME CREEPERS NOW! ===
         // Squid, Glow Squid, Dolphin, Axolotl, Tadpole, Frog, Turtle
         // ALL become CREEPERS!
-        
+
         // === PLAYER (obviously) ===
         NEVER_REPLACE.add(EntityType.PLAYER);
-        
+
         // === NON-MOB ENTITIES (items, projectiles, etc.) ===
         // These are checked separately - only LivingEntity can be replaced
     }
-    
+
     /**
      * Count creepers in Overworld (cached for performance)
      */
@@ -157,7 +157,7 @@ public class MobReplacementHelper {
         }
         return cachedEndCreeperCount;
     }
-    
+
     /**
      * Can we spawn more creepers in this dimension?
      */
@@ -170,8 +170,18 @@ public class MobReplacementHelper {
         } else if (world.getRegistryKey().equals(World.END)) {
             return countCreepersInEnd(world) < dynamicLimit;
         }
-        // Custom dimensions - use Overworld limit
-        return countCreepersInOverworld(world) < dynamicLimit;
+        // Custom dimensions use Overworld-configured limit but count local dimension creepers.
+        return countCreepersInWorld(world) < dynamicLimit;
+    }
+
+    private static int countCreepersInWorld(ServerWorld world) {
+        int count = 0;
+        for (Entity entity : world.iterateEntities()) {
+            if (entity instanceof CreeperEntity) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public static boolean canSpawnMoreCreepersInEnd(ServerWorld world) {
@@ -211,7 +221,7 @@ public class MobReplacementHelper {
         int adjusted = (int) Math.round(baseLimit * multiplier);
         return Math.max(50, adjusted);
     }
-    
+
     /**
      * THE MAIN CHECK - Should this entity become a creeper?
      */
@@ -220,24 +230,24 @@ public class MobReplacementHelper {
         if (!CreeperApocalypse.CONFIG.isEnabled()) {
             return false;
         }
-        
+
         // MUST be a living entity (not items, projectiles, etc.)
         if (!(entity instanceof LivingEntity)) {
             return false;
         }
-        
+
         // Already a variant? Don't replace our own custom guys!
         if (ModEntities.isVariant(entity.getType())) {
             return false;
         }
-        
+
         EntityType<?> type = entity.getType();
-        
+
         // FISH: Don't spawn at all (will return null in createReplacementCreeper)
         if (FISH_TYPES.contains(type)) {
             return true; // Intercept them so we can remove them
         }
-        
+
         // Check the exclusion list
         if (NEVER_REPLACE.contains(type)) {
             return false;
@@ -249,12 +259,12 @@ public class MobReplacementHelper {
                 return false; // Allow Enderman to spawn once End cap is hit
             }
         }
-        
+
         // REMOVED: Check creeper limit
         // We now handle this in the mixin/replacement logic.
         // If limit is reached, we still return TRUE here so the mixin can intercept
         // and prevent the normal mob from spawning.
-        
+
         // ========================================
         // IF WE GET HERE, IT BECOMES A CREEPER!
         // ========================================
@@ -279,154 +289,21 @@ public class MobReplacementHelper {
         //
         return true;
     }
-    
+
     /**
-     * Get which type of creeper to spawn - variants spawn from Day 1!
-     * Uses config-based chances from GUI settings.
+     * Get which type of creeper to spawn.
      */
-    public static EntityType<?> getReplacementType(EntityType<?> original) {
-        // Check if variants are enabled in config
-        if (!CreeperApocalypse.CONFIG.specialVariantsEnabled()) {
-            return EntityType.CREEPER;
-        }
-        
-        // NO DAY MODE: Spawn all creepers with equal chance, ignoring day progression
-        if (CreeperApocalypse.CONFIG.ignoreDayProgression()) {
-            // 10 types total: Normal + 9 variants
-            // 10% chance for each variant, otherwise normal
-            // Actually, let's just use equal weights for all
-            int variant = RANDOM.nextInt(10);
-            switch (variant) {
-                case 0: return ModEntities.LIGHTNING_CREEPER;
-                case 1: return ModEntities.HAPPY_CREEPER;
-                case 2: return ModEntities.JOCKEY_CREEPER;
-                case 3: return ModEntities.BOUNCY_CREEPER;
-                case 4: return ModEntities.SPIDER_CREEPER;
-                case 5: return ModEntities.RAINBOW_CREEPER;
-                case 6: return ModEntities.NINJA_CREEPER;
-                case 7: return ModEntities.GIANT_CREEPER;
-                case 8: return ModEntities.MINI_CREEPER;
-                default: return EntityType.CREEPER; // 9 = Normal
-            }
-        }
-        
+    public static EntityType<?> getReplacementType() {
         int currentDay = CreeperApocalypse.CHALLENGE_DATA.getCurrentDay();
-        float roll = RANDOM.nextFloat();
-
-        // Day gates for variants
-        boolean allowSomeVariants = currentDay >= 3;
-        boolean allowMiniAndBouncy = currentDay >= 5;
-        boolean allowAllVariants = currentDay >= 8;
-
-        // No variants before Day 3
-        if (!allowSomeVariants) {
-            return EntityType.CREEPER;
-        }
-
-        // Make variants rarer overall, then scale slightly by day
-        float rarityMultiplier = 0.35f;
-        float dayBonus = Math.max(0, currentDay - 3) * 0.005f;
-        
-        // Get chances from config (set in GUI)
-        float miniChance = (CreeperApocalypse.CONFIG.getMiniCreeperChance() * rarityMultiplier) + dayBonus;
-        float giantChance = (CreeperApocalypse.CONFIG.getGiantCreeperChance() * rarityMultiplier) + dayBonus;
-        float spiderChance = (CreeperApocalypse.CONFIG.getSpiderCreeperChance() * rarityMultiplier) + dayBonus;
-        
-        // Fixed chances for other variants
-        float ninjaChance = (CreeperApocalypse.CONFIG.getNinjaCreeperChance() * rarityMultiplier) + dayBonus;
-        float rainbowChance = (CreeperApocalypse.CONFIG.getRainbowCreeperChance() * rarityMultiplier) + dayBonus;
-        float bouncyChance = (CreeperApocalypse.CONFIG.getBouncyCreeperChance() * rarityMultiplier) + dayBonus;
-        float jockeyChance = (CreeperApocalypse.CONFIG.getJockeyCreeperChance() * rarityMultiplier) + dayBonus;
-        float happyChance = (CreeperApocalypse.CONFIG.getHappyCreeperChance() * rarityMultiplier) + dayBonus;
-        float lightningChance = (CreeperApocalypse.CONFIG.getLightningCreeperChance() * rarityMultiplier) + dayBonus;
-
-        // Gate mini + bouncy until Day 5
-        if (!allowMiniAndBouncy) {
-            miniChance = 0.0f;
-            bouncyChance = 0.0f;
-        }
-
-        // Gate some variants until Day 8 (Giant, Rainbow, and Lightning are late-game)
-        if (!allowAllVariants) {
-            giantChance = 0.0f;
-            rainbowChance = 0.0f;
-            lightningChance = 0.0f;
-            // Happy creeper should be available from Day 3, so we don't zero it here
-        }
-
-        // Roll for each variant type
-        
-        // Lightning Creeper
-        if (roll < lightningChance) {
-            CreeperApocalypse.LOGGER.debug("Spawning LIGHTNING creeper (roll: " + roll + ")");
-            return ModEntities.LIGHTNING_CREEPER;
-        }
-        roll -= lightningChance;
-
-        // Happy Creeper
-        if (roll < happyChance) {
-            CreeperApocalypse.LOGGER.debug("Spawning HAPPY creeper (roll: " + roll + ")");
-            return ModEntities.HAPPY_CREEPER;
-        }
-        roll -= happyChance;
-
-        // Jockey Creeper
-        if (roll < jockeyChance) {
-            CreeperApocalypse.LOGGER.debug("Spawning JOCKEY creeper (roll: " + roll + ")");
-            return ModEntities.JOCKEY_CREEPER;
-        }
-        roll -= jockeyChance;
-        
-        // Bouncy Creeper
-        if (roll < bouncyChance) {
-            CreeperApocalypse.LOGGER.debug("Spawning BOUNCY creeper (roll: " + roll + ")");
-            return ModEntities.BOUNCY_CREEPER;
-        }
-        roll -= bouncyChance;
-        
-        // Spider Creeper
-        if (roll < spiderChance) {
-            CreeperApocalypse.LOGGER.debug("Spawning SPIDER creeper (roll: " + roll + ")");
-            return ModEntities.SPIDER_CREEPER;
-        }
-        roll -= spiderChance;
-        
-        // Rainbow Creeper
-        if (roll < rainbowChance) {
-            CreeperApocalypse.LOGGER.debug("Spawning RAINBOW creeper (roll: " + roll + ")");
-            return ModEntities.RAINBOW_CREEPER;
-        }
-        roll -= rainbowChance;
-        
-        // Giant Creeper
-        if (roll < giantChance) {
-            CreeperApocalypse.LOGGER.debug("Spawning GIANT creeper (roll: " + roll + ")");
-            return ModEntities.GIANT_CREEPER;
-        }
-        roll -= giantChance;
-        
-        // Ninja Creeper
-        if (roll < ninjaChance) {
-            CreeperApocalypse.LOGGER.debug("Spawning NINJA creeper (roll: " + roll + ")");
-            return ModEntities.NINJA_CREEPER;
-        }
-        roll -= ninjaChance;
-        
-        // Mini Creeper
-        if (roll < miniChance) {
-            CreeperApocalypse.LOGGER.debug("Spawning MINI creeper (roll: " + roll + ")");
-            return ModEntities.MINI_CREEPER;
-        }
-        
-        return EntityType.CREEPER;
+        return CreeperVariantSelector.select(RANDOM, currentDay);
     }
-    
+
     /**
      * Create the replacement creeper
      */
     public static Entity createReplacementCreeper(ServerWorld world, Entity original) {
         EntityType<?> originalType = original.getType();
-        
+
         // FISH: Don't spawn at all - return null to prevent spawn
         if (FISH_TYPES.contains(originalType)) {
             return null;
@@ -436,7 +313,7 @@ public class MobReplacementHelper {
         if (world.getRegistryKey().equals(World.END) && !canSpawnMoreCreepersInEnd(world)) {
             return null;
         }
-        
+
         if (!canSpawnMoreCreepers(world)) {
             return null;
         }
@@ -446,42 +323,34 @@ public class MobReplacementHelper {
                 return null;
             }
         }
-        
-        EntityType<?> creeperType = getReplacementType(originalType);
-        
-        Entity replacement = creeperType.create(world, SpawnReason.MOB_SUMMONED);
+
+        EntityType<?> creeperType = getReplacementType();
+
+        Entity replacement = createCreeperEntity(world, creeperType, SpawnReason.MOB_SUMMONED);
         if (replacement == null) {
-            replacement = EntityType.CREEPER.create(world, SpawnReason.MOB_SUMMONED);
-            if (replacement == null) return null;
+            return null;
         }
-        
+
         replacement.setPosition(original.getX(), original.getY(), original.getZ());
         replacement.setYaw(original.getYaw());
         replacement.setPitch(original.getPitch());
-        
+
         if (replacement instanceof CreeperEntity creeper) {
             applyDayEnhancements(creeper);
         }
-        
-        // Increment dimension-specific cache
-        if (world.getRegistryKey().equals(World.OVERWORLD)) {
-            cachedOverworldCreeperCount++;
-        } else if (world.getRegistryKey().equals(World.NETHER)) {
-            cachedNetherCreeperCount++;
-        } else if (world.getRegistryKey().equals(World.END)) {
-            cachedEndCreeperCount++;
-        }
+
+        incrementCachedCount(world);
         return replacement;
     }
-    
+
     /**
      * Apply day-based enhancements (charged creepers etc)
      */
     public static void applyDayEnhancements(CreeperEntity creeper) {
         int currentDay = CreeperApocalypse.CHALLENGE_DATA.getCurrentDay();
-        
+
         // Special handling for Lightning Creeper: set super charged on Day 7+
-        if (creeper instanceof com.creeperapocalypse.entity.LightningCreeperEntity lightningCreeper) {
+        if (creeper instanceof LightningCreeperEntity lightningCreeper) {
             if (currentDay >= 7 && CreeperApocalypse.CONFIG.chargedDayEnabled()) {
                 float superChargeChance = 0.25f + ((currentDay - 7) * 0.05f);
                 superChargeChance = Math.min(superChargeChance, 0.75f);
@@ -497,7 +366,7 @@ public class MobReplacementHelper {
             }
             return;
         }
-        
+
         // Day 7+: Charged creepers (normal logic for other creepers)
         if (currentDay >= 7 && CreeperApocalypse.CONFIG.chargedDayEnabled()) {
             float chargedChance = 0.25f + ((currentDay - 7) * 0.05f);
@@ -506,13 +375,13 @@ public class MobReplacementHelper {
                 creeper.getDataTracker().set(CreeperEntity.CHARGED, true);
             }
         }
-        
+
         var handler = CreeperApocalypse.getMilestoneHandler();
         if (handler != null) {
             handler.applySpawnEffects(creeper);
         }
     }
-    
+
     /**
      * Get spawn count based on multiplier
      */
@@ -521,14 +390,14 @@ public class MobReplacementHelper {
         int base = 1;
         int bonus = 0;
         float remaining = multiplier - 1.0f;
-        
+
         while (remaining > 0) {
             if (remaining >= 1.0f || RANDOM.nextFloat() < remaining) {
                 bonus++;
             }
             remaining -= 1.0f;
         }
-        
+
         return base + bonus;
     }
 
@@ -545,12 +414,11 @@ public class MobReplacementHelper {
             return null;
         }
 
-        EntityType<?> creeperType = getReplacementType(EntityType.ENDERMAN);
+        EntityType<?> creeperType = getReplacementType();
         // Use SPAWNER reason so daylight doesn't block forced spawns on the surface.
-        Entity replacement = creeperType.create(world, SpawnReason.SPAWNER);
+        Entity replacement = createCreeperEntity(world, creeperType, SpawnReason.SPAWNER);
         if (replacement == null) {
-            replacement = EntityType.CREEPER.create(world, SpawnReason.SPAWNER);
-            if (replacement == null) return null;
+            return null;
         }
 
         replacement.setPosition(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
@@ -559,7 +427,19 @@ public class MobReplacementHelper {
             applyDayEnhancements(creeper);
         }
 
-        // Increment dimension-specific cache
+        incrementCachedCount(world);
+        return replacement;
+    }
+
+    private static Entity createCreeperEntity(ServerWorld world, EntityType<?> preferredType, SpawnReason reason) {
+        Entity replacement = preferredType.create(world, reason);
+        if (replacement != null) {
+            return replacement;
+        }
+        return EntityType.CREEPER.create(world, reason);
+    }
+
+    private static void incrementCachedCount(ServerWorld world) {
         if (world.getRegistryKey().equals(World.OVERWORLD)) {
             cachedOverworldCreeperCount++;
         } else if (world.getRegistryKey().equals(World.NETHER)) {
@@ -567,18 +447,19 @@ public class MobReplacementHelper {
         } else if (world.getRegistryKey().equals(World.END)) {
             cachedEndCreeperCount++;
         }
-        return replacement;
     }
-    
+
     public static void decrementCreeperCount() {
         // Legacy method - decrement all caches slightly to avoid stale data
         if (cachedOverworldCreeperCount > 0) cachedOverworldCreeperCount--;
+        if (cachedNetherCreeperCount > 0) cachedNetherCreeperCount--;
+        if (cachedEndCreeperCount > 0) cachedEndCreeperCount--;
     }
-    
+
     public static boolean isExcluded(EntityType<?> type) {
         return NEVER_REPLACE.contains(type);
     }
-    
+
     public static int getMaxCreepers() {
         return CreeperApocalypse.CONFIG.getMaxCreepersOverworld();
     }
@@ -590,9 +471,10 @@ public class MobReplacementHelper {
     public static int getMaxNetherCreepers() {
         return CreeperApocalypse.CONFIG.getMaxCreepersNether();
     }
-    
+
     public static int getCachedCreeperCount() {
         // Return total across all dimensions for HUD display
         return cachedOverworldCreeperCount + cachedNetherCreeperCount + cachedEndCreeperCount;
     }
 }
+

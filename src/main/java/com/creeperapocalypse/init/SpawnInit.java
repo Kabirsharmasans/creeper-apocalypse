@@ -37,7 +37,7 @@ public class SpawnInit {
                         if (type == EntityType.CREEPER || ModEntities.isVariant(type)) {
                             continue;
                         }
-                        
+
                         // If it's a type we want removed (Cow, Zombie, Fish, etc.), remove it from ALL groups
                         // This prevents natural spawning
                         context.getSpawnSettings().removeSpawnsOfEntityType(type);
@@ -58,17 +58,17 @@ public class SpawnInit {
         try {
             // Remove the default restriction (which requires darkness)
             SpawnRestrictionAccessor.getRestrictions().remove(EntityType.CREEPER);
-            
+
             // Register new restriction:
             // - Location: ON_GROUND (standard)
             // - Heightmap: MOTION_BLOCKING_NO_LEAVES (surface)
             // - Predicate: MobEntity::canMobSpawn (Check collision/liquids, BUT IGNORE LIGHT)
-            
+
             // NOTE: We used to use MobEntity::canMobSpawn, but on some blocks (like End Stone or Nether Bricks)
             // outside of their native dimensions/biomes, the checks can be weird.
             // Also, we want them to spawn EVERYWHERE.
             // We'll use a custom predicate that is extremely permissive.
-            
+
             SpawnRestriction.register(
                 EntityType.CREEPER,
                 SpawnLocationTypes.ON_GROUND,
@@ -82,10 +82,11 @@ public class SpawnInit {
                      return true;
                 }
             );
-            
+
             CreeperApocalypse.LOGGER.info("Creeper spawn restrictions relaxed (Daylight Spawning ENABLED)");
         } catch (Exception e) {
             CreeperApocalypse.LOGGER.error("Failed to override Creeper spawn restrictions", e);
         }
     }
 }
+

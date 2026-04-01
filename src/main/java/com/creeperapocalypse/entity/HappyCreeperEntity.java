@@ -14,7 +14,7 @@ import net.minecraft.world.World;
  * Happy Creeper - Pink, heals players instead of hurting them.
  */
 public class HappyCreeperEntity extends CreeperEntity {
-    
+
     // Workaround for missing getWorld() in some mappings
     private final World entityWorld;
 
@@ -22,25 +22,25 @@ public class HappyCreeperEntity extends CreeperEntity {
         super(entityType, world);
         this.entityWorld = world;
     }
-    
+
     public static DefaultAttributeContainer.Builder createHappyCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
             .add(EntityAttributes.MAX_HEALTH, 20.0)
             .add(EntityAttributes.MOVEMENT_SPEED, 0.25);
     }
-    
+
     // Custom logic called by Mixin
     public void doHappyExplosion() {
         if (!this.entityWorld.isClient()) {
             this.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE.value(), 1.0f, 0.8f);
 
             boolean charged = this.isCharged();
-            
+
             // Spawn hearts (more if charged) and optional lightning
             if (this.entityWorld instanceof net.minecraft.server.world.ServerWorld serverWorld) {
                 int particleCount = charged ? 100 : 20; // Tuned Boost: more hearts when charged
-                serverWorld.spawnParticles(net.minecraft.particle.ParticleTypes.HEART, 
-                    this.getX(), this.getY() + 1.0, this.getZ(), 
+                serverWorld.spawnParticles(net.minecraft.particle.ParticleTypes.HEART,
+                    this.getX(), this.getY() + 1.0, this.getZ(),
                     particleCount, 1.0, 1.0, 1.0, 0.5);
 
                 if (charged) {
@@ -56,16 +56,16 @@ public class HappyCreeperEntity extends CreeperEntity {
 
             // Heal nearby living entities; charged happy creeper gives stronger heals + Absorption V
             // NEW LOGIC: Damage other creepers, Heal/Buff non-creepers
-            
+
             // Buffed radius by 75% (6.0 -> 10.5, 8.0 -> 14.0)
             double radius = charged ? 14.0 : 10.5;
-            
-            this.getEntityWorld().getEntitiesByClass(net.minecraft.entity.LivingEntity.class, 
+
+            this.getEntityWorld().getEntitiesByClass(net.minecraft.entity.LivingEntity.class,
                 this.getBoundingBox().expand(radius), entity -> true)
                 .forEach(entity -> {
                     // Skip self
                     if (entity == this) return;
-                    
+
                     if (entity instanceof CreeperEntity && !(entity instanceof HappyCreeperEntity)) {
                         // DAMAGE hostile creepers
                         // Massive damage to ensure they die or get hurt badly
@@ -79,7 +79,7 @@ public class HappyCreeperEntity extends CreeperEntity {
                          entity.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, charged ? 2100 : 1050, 2));
                          // Instant Health III (was II)
                          entity.addStatusEffect(new StatusEffectInstance(StatusEffects.INSTANT_HEALTH, 1, 2));
-                         
+
                          if (charged) {
                              // Absorption X (was V) - Massive shield
                              entity.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 3600, 9));
@@ -88,8 +88,9 @@ public class HappyCreeperEntity extends CreeperEntity {
                          }
                     }
                 });
-                
+
             this.discard();
         }
     }
 }
+

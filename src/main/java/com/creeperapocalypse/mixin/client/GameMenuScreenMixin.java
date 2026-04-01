@@ -16,11 +16,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(GameMenuScreen.class)
 public abstract class GameMenuScreenMixin extends Screen {
-    
+
     protected GameMenuScreenMixin(Text title) {
         super(title);
     }
-    
+
     /**
      * Adds the Creeper Challenge Settings button to the pause menu
      */
@@ -31,17 +31,18 @@ public abstract class GameMenuScreenMixin extends Screen {
         int buttonHeight = 20;
         int x = this.width / 2 - buttonWidth / 2;
         int y = this.height / 4 + 120 + 24; // Position below other buttons
-        
+
         // Create the challenge settings button
         ButtonWidget challengeButton = ButtonWidget.builder(
-            Text.literal("§c☠ §eCreeper Challenge Settings §c☠"),
+            Text.literal("§c[!] §eCreeper Challenge Settings §c[!]"),
             button -> {
                 if (this.client != null) {
                     this.client.setScreen(new ChallengeSettingsScreen(this));
                 }
             }
         ).dimensions(x, y, buttonWidth, buttonHeight).build();
-        
+
         this.addDrawableChild(challengeButton);
     }
 }
+

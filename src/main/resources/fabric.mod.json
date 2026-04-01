@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "creeper-apocalypse-escalation",
+  "id": "creeper-apocalypse",
   "version": "${version}",
   "name": "Creeper Apocalypse Escalation",
   "description": "Replace all mob spawns with Creepers! Features auto-escalating spawn rates, milestone events, special creeper variants, and streaming features.",

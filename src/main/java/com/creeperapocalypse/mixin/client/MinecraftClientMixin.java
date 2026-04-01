@@ -14,11 +14,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(MinecraftClient.class)
 public class MinecraftClientMixin {
-    
+
     // Tracks screenshot delay counter
     @Unique
     private int creeperApocalypse$screenshotDelay = 0;
-    
+
     /**
      * Tick handler for client-side features
      */
@@ -27,7 +27,7 @@ public class MinecraftClientMixin {
         if (!CreeperApocalypse.CONFIG.isEnabled()) {
             return;
         }
-        
+
         MinecraftClient client = (MinecraftClient) (Object) this;
 
         // Handle pending death screenshot using flag from main mod
@@ -53,3 +53,4 @@ public class MinecraftClientMixin {
         }
     }
 }
+

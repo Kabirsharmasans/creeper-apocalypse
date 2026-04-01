@@ -12,9 +12,16 @@ import net.minecraft.world.World;
 public class EndSurfaceSpawnHandler {
 
     private int tickCounter = 0;
+    private boolean registered;
 
     public void register() {
+        if (registered) {
+            CreeperApocalypse.LOGGER.debug("End surface spawn handler already registered; skipping duplicate registration");
+            return;
+        }
+
         ServerTickEvents.END_WORLD_TICK.register(this::onWorldTick);
+        registered = true;
         CreeperApocalypse.LOGGER.info("End surface spawn handler registered");
     }
 
@@ -117,3 +124,4 @@ public class EndSurfaceSpawnHandler {
         }
     }
 }
+

@@ -23,24 +23,25 @@ public class SpawnRestrictionMixin {
         cancellable = true
     )
     private static <T extends net.minecraft.entity.Entity> void forceCreeperSpawn(
-            EntityType<T> type, 
-            ServerWorldAccess world, 
-            SpawnReason spawnReason, 
-            BlockPos pos, 
-            Random random, 
+            EntityType<T> type,
+            ServerWorldAccess world,
+            SpawnReason spawnReason,
+            BlockPos pos,
+            Random random,
             CallbackInfoReturnable<Boolean> cir
     ) {
         if (type == EntityType.CREEPER) {
             // "Nuclear Option": If it's a Creeper, we say YES.
             // We still want basic checks (block is solid), so we duplicate the permissive check here.
-            
+
             // 1. Must implement basic ground check so they don't spawn in mid-air or inside walls
             boolean solidBelow = world.getBlockState(pos.down()).isSolidBlock(world, pos.down());
             boolean clearSpace = world.getBlockState(pos).getCollisionShape(world, pos).isEmpty();
-            
+
             if (solidBelow && clearSpace) {
                  cir.setReturnValue(true);
             }
         }
     }
 }
+

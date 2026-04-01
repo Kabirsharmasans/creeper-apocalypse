@@ -32,11 +32,11 @@ import net.minecraft.util.Identifier;
  * Each variant has unique visual characteristics via custom textures
  */
 public class CreeperVariantRenderer {
-    
+
     // Thread-local flag to track when rendering a super charged Lightning Creeper
     // Used by CreeperChargeFeatureRendererMixin to swap the aura texture to purple
     public static final ThreadLocal<Boolean> RENDERING_SUPER_CHARGED = ThreadLocal.withInitial(() -> false);
-    
+
     // Custom textures for each variant
     private static final Identifier MINI_CREEPER_TEXTURE = Identifier.of(CreeperApocalypse.MOD_ID, "textures/entity/mini_creeper.png");
     private static final Identifier GIANT_CREEPER_TEXTURE = Identifier.of(CreeperApocalypse.MOD_ID, "textures/entity/giant_creeper.png");
@@ -47,120 +47,120 @@ public class CreeperVariantRenderer {
     private static final Identifier JOCKEY_CREEPER_TEXTURE = Identifier.of(CreeperApocalypse.MOD_ID, "textures/entity/jockey_creeper.png");
     private static final Identifier HAPPY_CREEPER_TEXTURE = Identifier.of(CreeperApocalypse.MOD_ID, "textures/entity/happy_creeper.png");
     private static final Identifier LIGHTNING_CREEPER_TEXTURE = Identifier.of(CreeperApocalypse.MOD_ID, "textures/entity/lightning_creeper.png");
-    
+
     /**
      * Renderer for Mini Creepers - 50% scale
      */
     public static class MiniCreeperRenderer extends CreeperEntityRenderer {
-        
+
         public MiniCreeperRenderer(EntityRendererFactory.Context context) {
             super(context);
             this.shadowRadius = 0.25f;
         }
-        
+
         @Override
         public Identifier getTexture(CreeperEntityRenderState state) {
             return MINI_CREEPER_TEXTURE;
         }
-        
+
         @Override
         protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
             matrices.scale(0.5f, 0.5f, 0.5f);
             super.scale(state, matrices);
         }
     }
-    
+
     /**
      * Renderer for Giant Creepers - 200% scale
      */
     public static class GiantCreeperRenderer extends CreeperEntityRenderer {
-        
+
         public GiantCreeperRenderer(EntityRendererFactory.Context context) {
             super(context);
             this.shadowRadius = 1.0f;
         }
-        
+
         @Override
         public Identifier getTexture(CreeperEntityRenderState state) {
             return GIANT_CREEPER_TEXTURE;
         }
-        
+
         @Override
         protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
             matrices.scale(2.0f, 2.0f, 2.0f);
             super.scale(state, matrices);
         }
     }
-    
+
     /**
      * Renderer for Spider Creepers - standard size, can climb
      */
     public static class SpiderCreeperRenderer extends CreeperEntityRenderer {
-        
+
         public SpiderCreeperRenderer(EntityRendererFactory.Context context) {
             super(context);
             this.shadowRadius = 0.5f;
         }
-        
+
         @Override
         public Identifier getTexture(CreeperEntityRenderState state) {
             return SPIDER_CREEPER_TEXTURE;
         }
     }
-    
+
     /**
      * Renderer for Ninja Creepers - slightly smaller, stealthy
      */
     public static class NinjaCreeperRenderer extends CreeperEntityRenderer {
-        
+
         public NinjaCreeperRenderer(EntityRendererFactory.Context context) {
             super(context);
             this.shadowRadius = 0.4f;
         }
-        
+
         @Override
         public Identifier getTexture(CreeperEntityRenderState state) {
             return NINJA_CREEPER_TEXTURE;
         }
-        
+
         @Override
         protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
             matrices.scale(0.9f, 0.9f, 0.9f);
             super.scale(state, matrices);
         }
     }
-    
+
     /**
      * Renderer for Rainbow Creepers - normal size, fabulous
      */
     public static class RainbowCreeperRenderer extends CreeperEntityRenderer {
-        
+
         public RainbowCreeperRenderer(EntityRendererFactory.Context context) {
             super(context);
             this.shadowRadius = 0.5f;
         }
-        
+
         @Override
         public Identifier getTexture(CreeperEntityRenderState state) {
             return RAINBOW_CREEPER_TEXTURE;
         }
     }
-    
+
     /**
      * Renderer for Bouncy Creepers - slightly squished look
      */
     public static class BouncyCreeperRenderer extends CreeperEntityRenderer {
-        
+
         public BouncyCreeperRenderer(EntityRendererFactory.Context context) {
             super(context);
             this.shadowRadius = 0.5f;
         }
-        
+
         @Override
         public Identifier getTexture(CreeperEntityRenderState state) {
             return BOUNCY_CREEPER_TEXTURE;
         }
-        
+
         @Override
         protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
             // Slightly wider and shorter - bouncy!
@@ -168,22 +168,22 @@ public class CreeperVariantRenderer {
             super.scale(state, matrices);
         }
     }
-    
+
     /**
      * Renderer for Jockey Creepers - the mount creeper
      */
     public static class JockeyCreeperRenderer extends CreeperEntityRenderer {
-        
+
         public JockeyCreeperRenderer(EntityRendererFactory.Context context) {
             super(context);
             this.shadowRadius = 0.6f;
         }
-        
+
         @Override
         public Identifier getTexture(CreeperEntityRenderState state) {
             return JOCKEY_CREEPER_TEXTURE;
         }
-        
+
         @Override
         protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
             // Slightly larger to carry a rider
@@ -196,17 +196,17 @@ public class CreeperVariantRenderer {
      * Renderer for Happy Creepers - Pink and friendly-looking
      */
     public static class HappyCreeperRenderer extends CreeperEntityRenderer {
-        
+
         public HappyCreeperRenderer(EntityRendererFactory.Context context) {
             super(context);
             this.shadowRadius = 0.5f;
         }
-        
+
         @Override
         public Identifier getTexture(CreeperEntityRenderState state) {
             return HAPPY_CREEPER_TEXTURE;
         }
-        
+
         @Override
         protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
             matrices.scale(0.9f, 0.9f, 0.9f); // Slightly smaller, cuter
@@ -218,17 +218,17 @@ public class CreeperVariantRenderer {
      * Renderer for Lightning Creepers - Boss size
      */
     public static class LightningCreeperRenderer extends CreeperEntityRenderer {
-        
+
         public LightningCreeperRenderer(EntityRendererFactory.Context context) {
             super(context);
             this.shadowRadius = 0.8f;
         }
-        
+
         @Override
         public Identifier getTexture(CreeperEntityRenderState state) {
             return LIGHTNING_CREEPER_TEXTURE;
         }
-        
+
         @Override
         protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
             // Set thread-local flag for super charged state (used by mixin to swap aura texture)
@@ -262,3 +262,4 @@ public class CreeperVariantRenderer {
     }
 
 }
+
