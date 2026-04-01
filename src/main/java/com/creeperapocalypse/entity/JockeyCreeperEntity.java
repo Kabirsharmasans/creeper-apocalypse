@@ -13,8 +13,6 @@ import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
 
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.server.world.ServerWorld;
 
 /**
  * Jockey Creeper - A regular creeper with a Mini Creeper riding on top!
@@ -31,18 +29,18 @@ public class JockeyCreeperEntity extends CreeperEntity {
 
     public static DefaultAttributeContainer.Builder createJockeyCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 25.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.22)
-            .add(EntityAttributes.FOLLOW_RANGE, 40.0);
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 25.0)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.22)
+            .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0);
     }
 
     @Override
-    public boolean damage(ServerWorld world, DamageSource source, float amount) {
+    public boolean damage(DamageSource source, float amount) {
         // Immune to Creeper explosions, but vulnerable to TNT/Players
         if (source.getAttacker() instanceof CreeperEntity) {
             return false;
         }
-        return super.damage(world, source, amount);
+        return super.damage(source, amount);
     }
 
     @Override
@@ -58,7 +56,7 @@ public class JockeyCreeperEntity extends CreeperEntity {
     private void spawnRider() {
         World world = this.getEntityWorld();
         if (world instanceof ServerWorld serverWorld) {
-            MiniCreeperEntity rider = ModEntities.MINI_CREEPER.create(serverWorld, SpawnReason.JOCKEY);
+            MiniCreeperEntity rider = ModEntities.MINI_CREEPER.create(serverWorld);
             if (rider != null) {
                 rider.setPosition(getX(), getY(), getZ());
                 serverWorld.spawnEntity(rider);

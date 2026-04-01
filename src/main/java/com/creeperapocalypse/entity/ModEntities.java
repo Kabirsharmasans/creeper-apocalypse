@@ -43,13 +43,14 @@ public class ModEntities {
     public static final RegistryKey<EntityType<?>> LIGHTNING_CREEPER_KEY = RegistryKey.of(
         RegistryKeys.ENTITY_TYPE, Identifier.of(CreeperApocalypse.MOD_ID, "lightning_creeper")
     );
+    
     // Mini Creeper - smaller, faster, less damage
     public static final EntityType<MiniCreeperEntity> MINI_CREEPER = Registry.register(
         Registries.ENTITY_TYPE,
         MINI_CREEPER_KEY,
         EntityType.Builder.<MiniCreeperEntity>create(MiniCreeperEntity::new, SpawnGroup.MONSTER)
             .dimensions(0.3f, 0.85f) // Half size
-            .build(MINI_CREEPER_KEY)
+                .build(MINI_CREEPER_KEY.getValue().toString())
     );
 
     // Giant Creeper - larger, slower, massive explosion
@@ -58,7 +59,7 @@ public class ModEntities {
         GIANT_CREEPER_KEY,
         EntityType.Builder.<GiantCreeperEntity>create(GiantCreeperEntity::new, SpawnGroup.MONSTER)
             .dimensions(1.2f, 3.4f) // Double size
-            .build(GIANT_CREEPER_KEY)
+                .build(GIANT_CREEPER_KEY.getValue().toString())
     );
 
     // Spider Creeper - can climb walls
@@ -67,7 +68,7 @@ public class ModEntities {
         SPIDER_CREEPER_KEY,
         EntityType.Builder.<SpiderCreeperEntity>create(SpiderCreeperEntity::new, SpawnGroup.MONSTER)
             .dimensions(0.6f, 1.7f)
-            .build(SPIDER_CREEPER_KEY)
+                .build(SPIDER_CREEPER_KEY.getValue().toString())
     );
 
     // Ninja Creeper - invisible until close
@@ -76,7 +77,7 @@ public class ModEntities {
         NINJA_CREEPER_KEY,
         EntityType.Builder.<NinjaCreeperEntity>create(NinjaCreeperEntity::new, SpawnGroup.MONSTER)
             .dimensions(0.6f, 1.7f)
-            .build(NINJA_CREEPER_KEY)
+                .build(NINJA_CREEPER_KEY.getValue().toString())
     );
 
     // Rainbow Creeper - colorful and glowing
@@ -85,7 +86,7 @@ public class ModEntities {
         RAINBOW_CREEPER_KEY,
         EntityType.Builder.<RainbowCreeperEntity>create(RainbowCreeperEntity::new, SpawnGroup.MONSTER)
             .dimensions(0.6f, 1.7f)
-            .build(RAINBOW_CREEPER_KEY)
+                .build(RAINBOW_CREEPER_KEY.getValue().toString())
     );
 
     // Bouncy Creeper - hops around like slime
@@ -94,7 +95,7 @@ public class ModEntities {
         BOUNCY_CREEPER_KEY,
         EntityType.Builder.<BouncyCreeperEntity>create(BouncyCreeperEntity::new, SpawnGroup.MONSTER)
             .dimensions(0.6f, 1.7f)
-            .build(BOUNCY_CREEPER_KEY)
+                .build(BOUNCY_CREEPER_KEY.getValue().toString())
     );
 
     // Jockey Creeper - mini creeper rides on top!
@@ -103,7 +104,7 @@ public class ModEntities {
         JOCKEY_CREEPER_KEY,
         EntityType.Builder.<JockeyCreeperEntity>create(JockeyCreeperEntity::new, SpawnGroup.MONSTER)
             .dimensions(0.6f, 1.7f)
-            .build(JOCKEY_CREEPER_KEY)
+                .build(JOCKEY_CREEPER_KEY.getValue().toString())
     );
 
     // Happy Creeper - Heals players
@@ -112,7 +113,7 @@ public class ModEntities {
         HAPPY_CREEPER_KEY,
         EntityType.Builder.<HappyCreeperEntity>create(HappyCreeperEntity::new, SpawnGroup.MONSTER)
             .dimensions(0.6f, 1.7f)
-            .build(HAPPY_CREEPER_KEY)
+                .build(HAPPY_CREEPER_KEY.getValue().toString())
     );
 
     // Lightning Creeper - Boss variant
@@ -121,7 +122,7 @@ public class ModEntities {
         LIGHTNING_CREEPER_KEY,
         EntityType.Builder.<LightningCreeperEntity>create(LightningCreeperEntity::new, SpawnGroup.MONSTER)
             .dimensions(0.6f, 1.7f)
-            .build(LIGHTNING_CREEPER_KEY)
+                .build(LIGHTNING_CREEPER_KEY.getValue().toString())
     );
 
     /**

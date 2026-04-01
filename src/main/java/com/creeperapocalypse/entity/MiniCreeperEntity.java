@@ -22,9 +22,9 @@ public class MiniCreeperEntity extends CreeperEntity {
 
     public static DefaultAttributeContainer.Builder createMiniCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 20.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.375)
-            .add(EntityAttributes.FOLLOW_RANGE, 40.0);
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.375)
+            .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 40.0);
     }
 
     public String getVariantName() {

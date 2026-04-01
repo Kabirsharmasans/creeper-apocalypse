@@ -25,8 +25,8 @@ public class HappyCreeperEntity extends CreeperEntity {
 
     public static DefaultAttributeContainer.Builder createHappyCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 20.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.25);
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 20.0)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25);
     }
 
     // Custom logic called by Mixin
@@ -34,7 +34,7 @@ public class HappyCreeperEntity extends CreeperEntity {
         if (!this.entityWorld.isClient()) {
             this.playSound(SoundEvents.ENTITY_GENERIC_EXPLODE.value(), 1.0f, 0.8f);
 
-            boolean charged = this.isCharged();
+            boolean charged = this.dataTracker.get(CreeperEntity.CHARGED);
 
             // Spawn hearts (more if charged) and optional lightning
             if (this.entityWorld instanceof net.minecraft.server.world.ServerWorld serverWorld) {
@@ -45,7 +45,7 @@ public class HappyCreeperEntity extends CreeperEntity {
 
                 if (charged) {
                     // Summon a lightning bolt at the creeper's location
-                    var bolt = net.minecraft.entity.EntityType.LIGHTNING_BOLT.create(serverWorld, net.minecraft.entity.SpawnReason.TRIGGERED);
+                    var bolt = net.minecraft.entity.EntityType.LIGHTNING_BOLT.create(serverWorld);
                     if (bolt != null) {
                         bolt.refreshPositionAndAngles(this.getX(), this.getY(), this.getZ(), this.getYaw(), 0.0f);
                         serverWorld.spawnEntity(bolt);
@@ -70,7 +70,7 @@ public class HappyCreeperEntity extends CreeperEntity {
                         // DAMAGE hostile creepers
                         // Massive damage to ensure they die or get hurt badly
                         if (this.getEntityWorld() instanceof net.minecraft.server.world.ServerWorld serverWorld) {
-                             entity.damage(serverWorld, serverWorld.getDamageSources().magic(), charged ? 50.0f : 20.0f);
+                            entity.damage(serverWorld.getDamageSources().magic(), charged ? 50.0f : 20.0f);
                         }
                     } else if (!(entity instanceof CreeperEntity)) {
                          // BUFF non-creepers (Players, passive mobs, etc)

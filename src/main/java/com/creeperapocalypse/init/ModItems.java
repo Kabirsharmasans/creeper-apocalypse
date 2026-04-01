@@ -13,8 +13,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Identifier;
@@ -82,10 +80,8 @@ public class ModItems {
 
     private static Item registerSpawnEgg(String name, EntityType<? extends MobEntity> type, int primaryColor, int secondaryColor) {
         Identifier id = Identifier.of(CreeperApocalypse.MOD_ID, name);
-        RegistryKey<Item> key = RegistryKey.of(RegistryKeys.ITEM, id);
-        // Important: Must set registry key in settings to avoid Item id not set error
         return Registry.register(Registries.ITEM, id,
-                new CustomSpawnEggItem(type, primaryColor, secondaryColor, new Item.Settings().registryKey(key)));
+                new CustomSpawnEggItem(type, primaryColor, secondaryColor, new Item.Settings()));
     }
 
     public static void register() {

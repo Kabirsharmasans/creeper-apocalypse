@@ -432,11 +432,11 @@ public class MobReplacementHelper {
     }
 
     private static Entity createCreeperEntity(ServerWorld world, EntityType<?> preferredType, SpawnReason reason) {
-        Entity replacement = preferredType.create(world, reason);
+        Entity replacement = preferredType.create(world);
         if (replacement != null) {
             return replacement;
         }
-        return EntityType.CREEPER.create(world, reason);
+        return EntityType.CREEPER.create(world);
     }
 
     private static void incrementCachedCount(ServerWorld world) {

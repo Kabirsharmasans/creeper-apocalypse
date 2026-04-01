@@ -9,7 +9,6 @@ import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.server.PlayerConfigEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 
@@ -28,11 +27,7 @@ public class ModNetworking {
         long totalCreepersSpawned,
         long totalCreepersKilled,
         long totalExplosions,
-        long totalCreeperDeaths,
-        int highestDayReached,
-        boolean bloodMoonActive,
-        boolean chargedDayActive,
-        boolean swarmActive
+        int highestDayReached
     ) implements CustomPayload {
         public static final Id<SyncChallengeDataPayload> ID = new Id<>(SYNC_CHALLENGE_DATA_ID);
 
@@ -42,11 +37,7 @@ public class ModNetworking {
             PacketCodecs.VAR_LONG, SyncChallengeDataPayload::totalCreepersSpawned,
             PacketCodecs.VAR_LONG, SyncChallengeDataPayload::totalCreepersKilled,
             PacketCodecs.VAR_LONG, SyncChallengeDataPayload::totalExplosions,
-            PacketCodecs.VAR_LONG, SyncChallengeDataPayload::totalCreeperDeaths,
             PacketCodecs.INTEGER, SyncChallengeDataPayload::highestDayReached,
-            PacketCodecs.BOOLEAN, SyncChallengeDataPayload::bloodMoonActive,
-            PacketCodecs.BOOLEAN, SyncChallengeDataPayload::chargedDayActive,
-            PacketCodecs.BOOLEAN, SyncChallengeDataPayload::swarmActive,
             SyncChallengeDataPayload::new
         );
 
@@ -83,8 +74,7 @@ public class ModNetworking {
         ServerPlayNetworking.registerGlobalReceiver(ResetRequestPayload.ID, (payload, context) -> {
             context.server().execute(() -> {
                 ServerPlayerEntity player = context.player();
-                PlayerConfigEntry entry = new PlayerConfigEntry(player.getGameProfile());
-                boolean isOp = context.server().getPlayerManager().getOpList().get(entry) != null;
+                boolean isOp = context.server().getPlayerManager().isOperator(player.getGameProfile());
                 if (isOp || context.server().isSingleplayer()) {
                     CreeperApocalypse.resetChallenge();
                     CreeperApocalypse.CHALLENGE_DATA.save(context.server());
@@ -115,7 +105,6 @@ public class ModNetworking {
                 CreeperApocalypse.CHALLENGE_DATA.setTotalCreepersSpawned(payload.totalCreepersSpawned());
                 CreeperApocalypse.CHALLENGE_DATA.setTotalCreepersKilled(payload.totalCreepersKilled());
                 CreeperApocalypse.CHALLENGE_DATA.setTotalExplosions(payload.totalExplosions());
-                CreeperApocalypse.CHALLENGE_DATA.setTotalCreeperDeaths(payload.totalCreeperDeaths());
 
                 CreeperApocalypse.LOGGER.debug("Received challenge sync: Day " + payload.currentDay());
             });
@@ -123,22 +112,13 @@ public class ModNetworking {
     }
 
     public static void syncChallengeData(ServerPlayerEntity player, ChallengeData data) {
-        var milestoneHandler = CreeperApocalypse.getMilestoneHandler();
-        boolean bloodMoonActive = milestoneHandler != null && milestoneHandler.isBloodMoonActive();
-        boolean chargedDayActive = milestoneHandler != null && milestoneHandler.isChargedDayActive();
-        boolean swarmActive = milestoneHandler != null && milestoneHandler.isSwarmActive();
-
         SyncChallengeDataPayload payload = new SyncChallengeDataPayload(
             data.getCurrentDay(),
             data.getSpawnMultiplier(),
             data.getTotalCreepersSpawned(),
             data.getTotalCreepersKilled(),
             data.getTotalExplosions(),
-            data.getTotalCreeperDeaths(),
-            data.getHighestDayReached(),
-            bloodMoonActive,
-            chargedDayActive,
-            swarmActive
+            data.getHighestDayReached()
         );
 
         ServerPlayNetworking.send(player, payload);

@@ -185,21 +185,21 @@ public class PlayerStats {
      */
     public static PlayerStats fromNbt(NbtCompound nbt) {
         PlayerStats stats = new PlayerStats();
-        String uuidStr = nbt.getString("playerId").orElse(UUID.randomUUID().toString());
+        String uuidStr = nbt.contains("playerId") ? nbt.getString("playerId") : UUID.randomUUID().toString();
         stats.playerId = UUID.fromString(uuidStr);
-        stats.playerName = nbt.getString("playerName").orElse("Unknown");
-        stats.creeperDeaths = nbt.getInt("creeperDeaths").orElse(0);
-        stats.creepersKilled = nbt.getInt("creepersKilled").orElse(0);
-        stats.explosionsSurvived = nbt.getInt("explosionsSurvived").orElse(0);
-        stats.nearMisses = nbt.getInt("nearMisses").orElse(0);
-        stats.closestNearMiss = nbt.getFloat("closestNearMiss").orElse(Float.MAX_VALUE);
-        stats.miniCreepersKilled = nbt.getInt("miniCreepersKilled").orElse(0);
-        stats.giantCreepersKilled = nbt.getInt("giantCreepersKilled").orElse(0);
-        stats.spiderCreepersKilled = nbt.getInt("spiderCreepersKilled").orElse(0);
-        stats.chargedCreepersKilled = nbt.getInt("chargedCreepersKilled").orElse(0);
-        stats.longestSurvivalStreak = nbt.getInt("longestSurvivalStreak").orElse(0);
-        stats.currentSurvivalStreak = nbt.getInt("currentSurvivalStreak").orElse(0);
-        stats.playTimeTicks = nbt.getLong("playTimeTicks").orElse(0L);
+        stats.playerName = nbt.contains("playerName") ? nbt.getString("playerName") : "Unknown";
+        stats.creeperDeaths = nbt.getInt("creeperDeaths");
+        stats.creepersKilled = nbt.getInt("creepersKilled");
+        stats.explosionsSurvived = nbt.getInt("explosionsSurvived");
+        stats.nearMisses = nbt.getInt("nearMisses");
+        stats.closestNearMiss = nbt.contains("closestNearMiss") ? nbt.getFloat("closestNearMiss") : Float.MAX_VALUE;
+        stats.miniCreepersKilled = nbt.getInt("miniCreepersKilled");
+        stats.giantCreepersKilled = nbt.getInt("giantCreepersKilled");
+        stats.spiderCreepersKilled = nbt.getInt("spiderCreepersKilled");
+        stats.chargedCreepersKilled = nbt.getInt("chargedCreepersKilled");
+        stats.longestSurvivalStreak = nbt.getInt("longestSurvivalStreak");
+        stats.currentSurvivalStreak = nbt.getInt("currentSurvivalStreak");
+        stats.playTimeTicks = nbt.getLong("playTimeTicks");
         return stats;
     }
 

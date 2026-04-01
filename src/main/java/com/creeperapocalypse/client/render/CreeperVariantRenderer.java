@@ -1,28 +1,9 @@
 package com.creeperapocalypse.client.render;
 
 import com.creeperapocalypse.CreeperApocalypse;
-import com.creeperapocalypse.entity.GiantCreeperEntity;
-import com.creeperapocalypse.entity.MiniCreeperEntity;
-import com.creeperapocalypse.entity.SpiderCreeperEntity;
-import com.creeperapocalypse.entity.NinjaCreeperEntity;
-import com.creeperapocalypse.entity.RainbowCreeperEntity;
-import com.creeperapocalypse.entity.BouncyCreeperEntity;
-import com.creeperapocalypse.entity.JockeyCreeperEntity;
 import com.creeperapocalypse.entity.LightningCreeperEntity;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.*;
-import net.minecraft.client.render.entity.*;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.CreeperEntityRenderer;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import net.minecraft.client.render.entity.feature.CreeperChargeFeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRenderer;
-import net.minecraft.client.render.entity.feature.FeatureRendererContext;
-import net.minecraft.client.render.entity.model.CreeperEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
-import net.minecraft.client.render.entity.state.CreeperEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.util.Identifier;
@@ -59,14 +40,14 @@ public class CreeperVariantRenderer {
         }
 
         @Override
-        public Identifier getTexture(CreeperEntityRenderState state) {
+        public Identifier getTexture(CreeperEntity entity) {
             return MINI_CREEPER_TEXTURE;
         }
 
         @Override
-        protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
+        protected void scale(CreeperEntity entity, MatrixStack matrices, float amount) {
             matrices.scale(0.5f, 0.5f, 0.5f);
-            super.scale(state, matrices);
+            super.scale(entity, matrices, amount);
         }
     }
 
@@ -81,14 +62,14 @@ public class CreeperVariantRenderer {
         }
 
         @Override
-        public Identifier getTexture(CreeperEntityRenderState state) {
+        public Identifier getTexture(CreeperEntity entity) {
             return GIANT_CREEPER_TEXTURE;
         }
 
         @Override
-        protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
+        protected void scale(CreeperEntity entity, MatrixStack matrices, float amount) {
             matrices.scale(2.0f, 2.0f, 2.0f);
-            super.scale(state, matrices);
+            super.scale(entity, matrices, amount);
         }
     }
 
@@ -103,7 +84,7 @@ public class CreeperVariantRenderer {
         }
 
         @Override
-        public Identifier getTexture(CreeperEntityRenderState state) {
+        public Identifier getTexture(CreeperEntity entity) {
             return SPIDER_CREEPER_TEXTURE;
         }
     }
@@ -119,14 +100,14 @@ public class CreeperVariantRenderer {
         }
 
         @Override
-        public Identifier getTexture(CreeperEntityRenderState state) {
+        public Identifier getTexture(CreeperEntity entity) {
             return NINJA_CREEPER_TEXTURE;
         }
 
         @Override
-        protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
+        protected void scale(CreeperEntity entity, MatrixStack matrices, float amount) {
             matrices.scale(0.9f, 0.9f, 0.9f);
-            super.scale(state, matrices);
+            super.scale(entity, matrices, amount);
         }
     }
 
@@ -141,7 +122,7 @@ public class CreeperVariantRenderer {
         }
 
         @Override
-        public Identifier getTexture(CreeperEntityRenderState state) {
+        public Identifier getTexture(CreeperEntity entity) {
             return RAINBOW_CREEPER_TEXTURE;
         }
     }
@@ -157,15 +138,15 @@ public class CreeperVariantRenderer {
         }
 
         @Override
-        public Identifier getTexture(CreeperEntityRenderState state) {
+        public Identifier getTexture(CreeperEntity entity) {
             return BOUNCY_CREEPER_TEXTURE;
         }
 
         @Override
-        protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
+        protected void scale(CreeperEntity entity, MatrixStack matrices, float amount) {
             // Slightly wider and shorter - bouncy!
             matrices.scale(1.1f, 0.9f, 1.1f);
-            super.scale(state, matrices);
+            super.scale(entity, matrices, amount);
         }
     }
 
@@ -180,15 +161,15 @@ public class CreeperVariantRenderer {
         }
 
         @Override
-        public Identifier getTexture(CreeperEntityRenderState state) {
+        public Identifier getTexture(CreeperEntity entity) {
             return JOCKEY_CREEPER_TEXTURE;
         }
 
         @Override
-        protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
+        protected void scale(CreeperEntity entity, MatrixStack matrices, float amount) {
             // Slightly larger to carry a rider
             matrices.scale(1.1f, 1.1f, 1.1f);
-            super.scale(state, matrices);
+            super.scale(entity, matrices, amount);
         }
     }
 
@@ -203,14 +184,14 @@ public class CreeperVariantRenderer {
         }
 
         @Override
-        public Identifier getTexture(CreeperEntityRenderState state) {
+        public Identifier getTexture(CreeperEntity entity) {
             return HAPPY_CREEPER_TEXTURE;
         }
 
         @Override
-        protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
+        protected void scale(CreeperEntity entity, MatrixStack matrices, float amount) {
             matrices.scale(0.9f, 0.9f, 0.9f); // Slightly smaller, cuter
-            super.scale(state, matrices);
+            super.scale(entity, matrices, amount);
         }
     }
 
@@ -225,41 +206,17 @@ public class CreeperVariantRenderer {
         }
 
         @Override
-        public Identifier getTexture(CreeperEntityRenderState state) {
+        public Identifier getTexture(CreeperEntity entity) {
             return LIGHTNING_CREEPER_TEXTURE;
         }
 
         @Override
-        protected void scale(CreeperEntityRenderState state, MatrixStack matrices) {
+        protected void scale(CreeperEntity entity, MatrixStack matrices, float amount) {
             // Set thread-local flag for super charged state (used by mixin to swap aura texture)
-            if (state instanceof LightningCreeperRenderState lightningState) {
-                RENDERING_SUPER_CHARGED.set(lightningState.superCharged);
-            }
+            RENDERING_SUPER_CHARGED.set(entity instanceof LightningCreeperEntity lightning && lightning.isSuperCharged());
             matrices.scale(1.4f, 1.4f, 1.4f); // Boss size
-            super.scale(state, matrices);
-        }
-
-        @Override
-        public CreeperEntityRenderState createRenderState() {
-             return new LightningCreeperRenderState();
-        }
-
-        @Override
-        public void updateRenderState(CreeperEntity entity, CreeperEntityRenderState state, float tickDelta) {
-            super.updateRenderState(entity, state, tickDelta);
-            if (entity instanceof LightningCreeperEntity lightningCreeper && state instanceof LightningCreeperRenderState lightningState) {
-                lightningState.superCharged = lightningCreeper.isSuperCharged();
-                // Keep vanilla charged state TRUE for super charged - this renders the aura!
-                // The thread-local RENDERING_SUPER_CHARGED flag is set in scale() and read by mixin
-                // to swap the aura texture from blue to purple
-            }
+            super.scale(entity, matrices, amount);
         }
     }
-
-    // Custom Render State to hold super charged status
-    public static class LightningCreeperRenderState extends CreeperEntityRenderState {
-        public boolean superCharged = false;
-    }
-
 }
 

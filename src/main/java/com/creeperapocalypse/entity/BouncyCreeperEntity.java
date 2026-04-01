@@ -24,9 +24,9 @@ public class BouncyCreeperEntity extends CreeperEntity {
 
     public static DefaultAttributeContainer.Builder createBouncyCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 18.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.30)
-            .add(EntityAttributes.FOLLOW_RANGE, 35.0);
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 18.0)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.30)
+            .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 35.0);
     }
 
     @Override

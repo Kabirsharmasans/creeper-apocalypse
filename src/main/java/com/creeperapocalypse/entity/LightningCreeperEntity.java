@@ -26,17 +26,17 @@ public class LightningCreeperEntity extends CreeperEntity {
 
     public static DefaultAttributeContainer.Builder createLightningCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 10.0) // Original HP restored
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.45) // Original speed restored
-            .add(EntityAttributes.FOLLOW_RANGE, 32.0); // NERFED: Follow range (was 40)
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 10.0) // Original HP restored
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.45) // Original speed restored
+            .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32.0); // NERFED: Follow range (was 40)
     }
 
     public void setSuperCharged(boolean superCharged) {
         this.superCharged = superCharged;
         if (superCharged) {
             // Original super charged stats restored
-            this.getAttributeInstance(EntityAttributes.MAX_HEALTH).setBaseValue(9.0);
-            this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(0.4875);
+            this.getAttributeInstance(EntityAttributes.GENERIC_MAX_HEALTH).setBaseValue(9.0);
+            this.getAttributeInstance(EntityAttributes.GENERIC_MOVEMENT_SPEED).setBaseValue(0.4875);
             this.setHealth(9.0f);
         }
     }
@@ -49,7 +49,7 @@ public class LightningCreeperEntity extends CreeperEntity {
     public void tick() {
         super.tick();
         // Force charged state always
-        if (!this.getEntityWorld().isClient() && !this.isCharged()) {
+           if (!this.getEntityWorld().isClient() && !this.dataTracker.get(CreeperEntity.CHARGED)) {
              this.dataTracker.set(CreeperEntity.CHARGED, true);
         }
 
@@ -63,11 +63,11 @@ public class LightningCreeperEntity extends CreeperEntity {
                 double z = this.getZ() + (this.random.nextDouble() - 0.5) * 0.5;
 
                 // Purple particles (use WITCH for purple magic effect as it is SimpleParticleType)
-                this.getEntityWorld().addParticleClient(net.minecraft.particle.ParticleTypes.WITCH, x, y, z, 0, 0.02, 0);
+                this.getEntityWorld().addParticle(net.minecraft.particle.ParticleTypes.WITCH, x, y, z, 0, 0.02, 0);
 
                 // Pink particles (effect - use portal for pink-ish effect)
                 if (this.random.nextFloat() < 0.3f) {
-                    this.getEntityWorld().addParticleClient(net.minecraft.particle.ParticleTypes.PORTAL, x, y, z,
+                    this.getEntityWorld().addParticle(net.minecraft.particle.ParticleTypes.PORTAL, x, y, z,
                         (this.random.nextDouble() - 0.5) * 0.1,
                         (this.random.nextDouble() - 0.5) * 0.1,
                         (this.random.nextDouble() - 0.5) * 0.1);
@@ -90,15 +90,15 @@ public class LightningCreeperEntity extends CreeperEntity {
     }
 
     @Override
-    public void writeCustomData(net.minecraft.storage.WriteView nbt) {
-        super.writeCustomData(nbt);
+    public void writeCustomDataToNbt(NbtCompound nbt) {
+        super.writeCustomDataToNbt(nbt);
         nbt.putBoolean("SuperCharged", this.superCharged);
     }
 
     @Override
-    public void readCustomData(net.minecraft.storage.ReadView nbt) {
-        super.readCustomData(nbt);
-        setSuperCharged(nbt.getBoolean("SuperCharged", false));
+    public void readCustomDataFromNbt(NbtCompound nbt) {
+        super.readCustomDataFromNbt(nbt);
+        setSuperCharged(nbt.getBoolean("SuperCharged"));
     }
 }
 

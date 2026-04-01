@@ -13,11 +13,8 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -31,10 +28,7 @@ public class CreeperApocalypseClient implements ClientModInitializer {
     private static StatsOverlayRenderer statsRenderer;
     private static boolean statsOverlayVisible = false;
 
-    // Create custom key binding category for this mod
-    private static final KeyBinding.Category MOD_CATEGORY = KeyBinding.Category.create(
-        Identifier.of(CreeperApocalypse.MOD_ID, "keybindings")
-    );
+    private static final String MOD_CATEGORY = "key.categories.creeper-apocalypse";
 
     @Override
     public void onInitializeClient() {
@@ -49,7 +43,7 @@ public class CreeperApocalypseClient implements ClientModInitializer {
 
         HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
             if (statsOverlayVisible && CreeperApocalypse.CONFIG.isEnabled()) {
-                statsRenderer.render(drawContext, tickCounter.getTickProgress(true));
+                statsRenderer.render(drawContext, 0.0f);
             }
         });
 

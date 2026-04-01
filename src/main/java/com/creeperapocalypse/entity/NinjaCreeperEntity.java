@@ -26,9 +26,9 @@ public class NinjaCreeperEntity extends CreeperEntity {
 
     public static DefaultAttributeContainer.Builder createNinjaCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 15.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.35)
-            .add(EntityAttributes.FOLLOW_RANGE, 30.0);
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 15.0)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.35)
+            .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 30.0);
     }
 
     @Override

@@ -31,9 +31,9 @@ public class RainbowCreeperEntity extends CreeperEntity {
 
     public static DefaultAttributeContainer.Builder createRainbowCreeperAttributes() {
         return HostileEntity.createHostileAttributes()
-            .add(EntityAttributes.MAX_HEALTH, 30.0)
-            .add(EntityAttributes.MOVEMENT_SPEED, 0.33)
-            .add(EntityAttributes.FOLLOW_RANGE, 48.0);
+            .add(EntityAttributes.GENERIC_MAX_HEALTH, 30.0)
+            .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.33)
+            .add(EntityAttributes.GENERIC_FOLLOW_RANGE, 48.0);
     }
 
     @Override
