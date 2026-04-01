@@ -19,9 +19,11 @@ import net.minecraft.world.World;
 public class NinjaCreeperEntity extends CreeperEntity {
 
     private boolean revealed = false;
+    private final World entityWorld;
 
     public NinjaCreeperEntity(EntityType<? extends CreeperEntity> entityType, World world) {
         super(entityType, world);
+        this.entityWorld = world;
     }
 
     public static DefaultAttributeContainer.Builder createNinjaCreeperAttributes() {
@@ -48,7 +50,7 @@ public class NinjaCreeperEntity extends CreeperEntity {
     }
 
     private PlayerEntity findNearestPlayer() {
-        return (PlayerEntity) this.getEntityWorld().getClosestPlayer(this.getX(), this.getY(), this.getZ(), 6.0, false);
+        return (PlayerEntity) this.entityWorld.getClosestPlayer(this.getX(), this.getY(), this.getZ(), 6.0, false);
     }
 
     private void reveal() {
@@ -79,7 +81,7 @@ public class NinjaCreeperEntity extends CreeperEntity {
     }
 
     private void spawnSmoke() {
-        if (this.getEntityWorld() instanceof ServerWorld serverWorld) {
+        if (this.entityWorld instanceof ServerWorld serverWorld) {
             serverWorld.spawnParticles(ParticleTypes.SMOKE,
                 this.getX(), this.getY() + 0.5, this.getZ(),
                 10, 0.2, 0.2, 0.2, 0.01);

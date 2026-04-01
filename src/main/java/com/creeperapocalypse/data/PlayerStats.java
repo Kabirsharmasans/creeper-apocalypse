@@ -4,7 +4,9 @@ import com.creeperapocalypse.CreeperApocalypse;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.nbt.NbtCompound;
+import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -185,22 +187,70 @@ public class PlayerStats {
      */
     public static PlayerStats fromNbt(NbtCompound nbt) {
         PlayerStats stats = new PlayerStats();
-        String uuidStr = nbt.getString("playerId").orElse(UUID.randomUUID().toString());
+        String uuidStr = readStringCompat(nbt, "playerId", UUID.randomUUID().toString());
         stats.playerId = UUID.fromString(uuidStr);
-        stats.playerName = nbt.getString("playerName").orElse("Unknown");
-        stats.creeperDeaths = nbt.getInt("creeperDeaths").orElse(0);
-        stats.creepersKilled = nbt.getInt("creepersKilled").orElse(0);
-        stats.explosionsSurvived = nbt.getInt("explosionsSurvived").orElse(0);
-        stats.nearMisses = nbt.getInt("nearMisses").orElse(0);
-        stats.closestNearMiss = nbt.getFloat("closestNearMiss").orElse(Float.MAX_VALUE);
-        stats.miniCreepersKilled = nbt.getInt("miniCreepersKilled").orElse(0);
-        stats.giantCreepersKilled = nbt.getInt("giantCreepersKilled").orElse(0);
-        stats.spiderCreepersKilled = nbt.getInt("spiderCreepersKilled").orElse(0);
-        stats.chargedCreepersKilled = nbt.getInt("chargedCreepersKilled").orElse(0);
-        stats.longestSurvivalStreak = nbt.getInt("longestSurvivalStreak").orElse(0);
-        stats.currentSurvivalStreak = nbt.getInt("currentSurvivalStreak").orElse(0);
-        stats.playTimeTicks = nbt.getLong("playTimeTicks").orElse(0L);
+        stats.playerName = readStringCompat(nbt, "playerName", "Unknown");
+        stats.creeperDeaths = readIntCompat(nbt, "creeperDeaths", 0);
+        stats.creepersKilled = readIntCompat(nbt, "creepersKilled", 0);
+        stats.explosionsSurvived = readIntCompat(nbt, "explosionsSurvived", 0);
+        stats.nearMisses = readIntCompat(nbt, "nearMisses", 0);
+        stats.closestNearMiss = readFloatCompat(nbt, "closestNearMiss", Float.MAX_VALUE);
+        stats.miniCreepersKilled = readIntCompat(nbt, "miniCreepersKilled", 0);
+        stats.giantCreepersKilled = readIntCompat(nbt, "giantCreepersKilled", 0);
+        stats.spiderCreepersKilled = readIntCompat(nbt, "spiderCreepersKilled", 0);
+        stats.chargedCreepersKilled = readIntCompat(nbt, "chargedCreepersKilled", 0);
+        stats.longestSurvivalStreak = readIntCompat(nbt, "longestSurvivalStreak", 0);
+        stats.currentSurvivalStreak = readIntCompat(nbt, "currentSurvivalStreak", 0);
+        stats.playTimeTicks = readLongCompat(nbt, "playTimeTicks", 0L);
         return stats;
+    }
+
+    private static String readStringCompat(NbtCompound nbt, String key, String fallback) {
+        Object value = unwrapOptional(invokeGetter(nbt, "getString", key));
+        if (value instanceof String stringValue && !stringValue.isEmpty()) {
+            return stringValue;
+        }
+        return fallback;
+    }
+
+    private static int readIntCompat(NbtCompound nbt, String key, int fallback) {
+        Object value = unwrapOptional(invokeGetter(nbt, "getInt", key));
+        if (value instanceof Number numberValue) {
+            return numberValue.intValue();
+        }
+        return fallback;
+    }
+
+    private static long readLongCompat(NbtCompound nbt, String key, long fallback) {
+        Object value = unwrapOptional(invokeGetter(nbt, "getLong", key));
+        if (value instanceof Number numberValue) {
+            return numberValue.longValue();
+        }
+        return fallback;
+    }
+
+    private static float readFloatCompat(NbtCompound nbt, String key, float fallback) {
+        Object value = unwrapOptional(invokeGetter(nbt, "getFloat", key));
+        if (value instanceof Number numberValue) {
+            return numberValue.floatValue();
+        }
+        return fallback;
+    }
+
+    private static Object invokeGetter(NbtCompound nbt, String methodName, String key) {
+        try {
+            Method method = nbt.getClass().getMethod(methodName, String.class);
+            return method.invoke(nbt, key);
+        } catch (ReflectiveOperationException ignored) {
+            return null;
+        }
+    }
+
+    private static Object unwrapOptional(Object value) {
+        if (value instanceof Optional<?> optionalValue) {
+            return optionalValue.orElse(null);
+        }
+        return value;
     }
 
     // ==================== STATIC METHODS ====================

@@ -21,7 +21,6 @@ import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.render.entity.model.CreeperEntityModel;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
-import net.minecraft.client.render.entity.model.LoadedEntityModels;
 import net.minecraft.client.render.entity.state.CreeperEntityRenderState;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.mob.CreeperEntity;

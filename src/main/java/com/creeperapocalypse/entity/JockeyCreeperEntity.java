@@ -13,8 +13,6 @@ import net.minecraft.world.World;
 import net.minecraft.server.world.ServerWorld;
 
 import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.server.world.ServerWorld;
 
 /**
  * Jockey Creeper - A regular creeper with a Mini Creeper riding on top!
@@ -24,9 +22,11 @@ import net.minecraft.server.world.ServerWorld;
 public class JockeyCreeperEntity extends CreeperEntity {
 
     private boolean hasSpawnedRider = false;
+    private final World entityWorld;
 
     public JockeyCreeperEntity(EntityType<? extends CreeperEntity> entityType, World world) {
         super(entityType, world);
+        this.entityWorld = world;
     }
 
     public static DefaultAttributeContainer.Builder createJockeyCreeperAttributes() {
@@ -56,7 +56,7 @@ public class JockeyCreeperEntity extends CreeperEntity {
     }
 
     private void spawnRider() {
-        World world = this.getEntityWorld();
+        World world = this.entityWorld;
         if (world instanceof ServerWorld serverWorld) {
             MiniCreeperEntity rider = ModEntities.MINI_CREEPER.create(serverWorld, SpawnReason.JOCKEY);
             if (rider != null) {

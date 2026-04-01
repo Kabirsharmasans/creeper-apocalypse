@@ -60,7 +60,7 @@ public class HappyCreeperEntity extends CreeperEntity {
             // Buffed radius by 75% (6.0 -> 10.5, 8.0 -> 14.0)
             double radius = charged ? 14.0 : 10.5;
 
-            this.getEntityWorld().getEntitiesByClass(net.minecraft.entity.LivingEntity.class,
+            this.entityWorld.getEntitiesByClass(net.minecraft.entity.LivingEntity.class,
                 this.getBoundingBox().expand(radius), entity -> true)
                 .forEach(entity -> {
                     // Skip self
@@ -69,7 +69,7 @@ public class HappyCreeperEntity extends CreeperEntity {
                     if (entity instanceof CreeperEntity && !(entity instanceof HappyCreeperEntity)) {
                         // DAMAGE hostile creepers
                         // Massive damage to ensure they die or get hurt badly
-                        if (this.getEntityWorld() instanceof net.minecraft.server.world.ServerWorld serverWorld) {
+                                if (this.entityWorld instanceof net.minecraft.server.world.ServerWorld serverWorld) {
                              entity.damage(serverWorld, serverWorld.getDamageSources().magic(), charged ? 50.0f : 20.0f);
                         }
                     } else if (!(entity instanceof CreeperEntity)) {

@@ -11,6 +11,7 @@ import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -254,7 +255,8 @@ public class MobReplacementHelper {
         }
 
         // End-only cap: limit Enderman -> Creeper replacements in The End
-        if (type == EntityType.ENDERMAN && entity.getEntityWorld() instanceof ServerWorld serverWorld) {
+        World entityWorld = resolveEntityWorld(entity);
+        if (type == EntityType.ENDERMAN && entityWorld instanceof ServerWorld serverWorld) {
             if (serverWorld.getRegistryKey().equals(World.END) && !canSpawnMoreCreepersInEnd(serverWorld)) {
                 return false; // Allow Enderman to spawn once End cap is hit
             }
@@ -341,6 +343,30 @@ public class MobReplacementHelper {
 
         incrementCachedCount(world);
         return replacement;
+    }
+
+    private static World resolveEntityWorld(Entity entity) {
+        try {
+            Method getWorldMethod = entity.getClass().getMethod("getWorld");
+            Object worldObj = getWorldMethod.invoke(entity);
+            if (worldObj instanceof World world) {
+                return world;
+            }
+        } catch (ReflectiveOperationException ignored) {
+            // Fall through to legacy accessor.
+        }
+
+        try {
+            Method getEntityWorldMethod = entity.getClass().getMethod("getEntityWorld");
+            Object worldObj = getEntityWorldMethod.invoke(entity);
+            if (worldObj instanceof World world) {
+                return world;
+            }
+        } catch (ReflectiveOperationException ignored) {
+            // No compatible world accessor available.
+        }
+
+        return null;
     }
 
     /**

@@ -13,12 +13,14 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * Client-side initialization for Creeper Apocalypse Escalation
@@ -31,10 +33,7 @@ public class CreeperApocalypseClient implements ClientModInitializer {
     private static StatsOverlayRenderer statsRenderer;
     private static boolean statsOverlayVisible = false;
 
-    // Create custom key binding category for this mod
-    private static final KeyBinding.Category MOD_CATEGORY = KeyBinding.Category.create(
-        Identifier.of(CreeperApocalypse.MOD_ID, "keybindings")
-    );
+    private static final String MOD_CATEGORY = "key.categories.creeper-apocalypse";
 
     @Override
     public void onInitializeClient() {
@@ -49,7 +48,7 @@ public class CreeperApocalypseClient implements ClientModInitializer {
 
         HudRenderCallback.EVENT.register((drawContext, tickCounter) -> {
             if (statsOverlayVisible && CreeperApocalypse.CONFIG.isEnabled()) {
-                statsRenderer.render(drawContext, tickCounter.getTickProgress(true));
+                statsRenderer.render(drawContext, 0.0f);
             }
         });
 
@@ -86,25 +85,93 @@ public class CreeperApocalypseClient implements ClientModInitializer {
     }
 
     private void registerKeyBindings() {
-        openSettingsKey = KeyBindingHelper.registerKeyBinding(
-            new KeyBinding(
-                "key.creeper-apocalypse.open_settings",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_K,
-                MOD_CATEGORY
-            )
-        );
+        openSettingsKey = KeyBindingHelper.registerKeyBinding(createKeyBinding(
+            "key.creeper-apocalypse.open_settings",
+            GLFW.GLFW_KEY_K
+        ));
 
-        toggleStatsKey = KeyBindingHelper.registerKeyBinding(
-            new KeyBinding(
-                "key.creeper-apocalypse.toggle_stats",
-                InputUtil.Type.KEYSYM,
-                GLFW.GLFW_KEY_J,
-                MOD_CATEGORY
-            )
-        );
+        toggleStatsKey = KeyBindingHelper.registerKeyBinding(createKeyBinding(
+            "key.creeper-apocalypse.toggle_stats",
+            GLFW.GLFW_KEY_J
+        ));
 
         CreeperApocalypse.LOGGER.info("Key bindings registered");
+    }
+
+    private KeyBinding createKeyBinding(String translationKey, int keyCode) {
+        try {
+            for (Constructor<?> constructor : KeyBinding.class.getConstructors()) {
+                Class<?>[] parameterTypes = constructor.getParameterTypes();
+                if (parameterTypes.length != 4) {
+                    continue;
+                }
+
+                if (parameterTypes[0] != String.class || parameterTypes[1] != InputUtil.Type.class || parameterTypes[2] != int.class) {
+                    continue;
+                }
+
+                Object categoryArgument = resolveCategoryArgument(parameterTypes[3]);
+                if (categoryArgument != null) {
+                    return (KeyBinding) constructor.newInstance(translationKey, InputUtil.Type.KEYSYM, keyCode, categoryArgument);
+                }
+            }
+        } catch (ReflectiveOperationException exception) {
+            CreeperApocalypse.LOGGER.error("Failed to register key binding {}", translationKey, exception);
+        }
+
+        throw new IllegalStateException("No compatible KeyBinding constructor available for current Minecraft version");
+    }
+
+    private Object resolveCategoryArgument(Class<?> categoryType) {
+        if (categoryType == String.class) {
+            return MOD_CATEGORY;
+        }
+
+        Object createdCategory = tryCreateCategoryWithFactory(categoryType);
+        if (createdCategory != null) {
+            return createdCategory;
+        }
+
+        Object staticCategory = tryGetStaticCategory(categoryType);
+        if (staticCategory != null) {
+            return staticCategory;
+        }
+
+        return null;
+    }
+
+    private Object tryCreateCategoryWithFactory(Class<?> categoryType) {
+        try {
+            for (Method method : categoryType.getDeclaredMethods()) {
+                if (!Modifier.isStatic(method.getModifiers()) || method.getReturnType() != categoryType) {
+                    continue;
+                }
+
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length == 1 && parameterTypes[0] == String.class) {
+                    method.setAccessible(true);
+                    return method.invoke(null, MOD_CATEGORY);
+                }
+            }
+        } catch (ReflectiveOperationException ignored) {
+            // Try static field fallback below.
+        }
+
+        return null;
+    }
+
+    private Object tryGetStaticCategory(Class<?> categoryType) {
+        try {
+            for (Field field : categoryType.getFields()) {
+                if (Modifier.isStatic(field.getModifiers()) && field.getType() == categoryType) {
+                    return field.get(null);
+                }
+            }
+        } catch (ReflectiveOperationException ignored) {
+            // No compatible static category available.
+        }
+
+        return null;
     }
 
     public static void toggleStatsOverlay() {

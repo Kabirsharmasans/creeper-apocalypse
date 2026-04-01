@@ -16,9 +16,11 @@ public class GiantCreeperEntity extends CreeperEntity {
 
     private static final int GIANT_EXPLOSION_RADIUS = 12;
     private boolean forcedIgnite = false;
+    private final World entityWorld;
 
     public GiantCreeperEntity(EntityType<? extends CreeperEntity> entityType, World world) {
         super(entityType, world);
+        this.entityWorld = world;
     }
 
     public static DefaultAttributeContainer.Builder createGiantCreeperAttributes() {
@@ -33,7 +35,7 @@ public class GiantCreeperEntity extends CreeperEntity {
     public void tick() {
         super.tick();
 
-        if (!this.getEntityWorld().isClient()) {
+        if (!this.entityWorld.isClient()) {
             if (this.getTarget() != null && this.squaredDistanceTo(this.getTarget()) <= 8.0 * 8.0) {
                 forcedIgnite = true;
                 this.ignite();
